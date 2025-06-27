@@ -1,4 +1,5 @@
 var notName: string = "hello";
+var dsdaName: string = "hello";
 
 console.log(notName);
 
