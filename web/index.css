@@ -82,22 +82,32 @@ body{
     border-top-left-radius: 3vh;
     display: flex;
     justify-content: space-between;
-    
+    padding-top: 1%;
+    padding-bottom: 1%;
 }
 
-#cardSelectionUI button{
+.cardSelectionButtons{
     height: 100%;
     flex: 1;
-    margin: 0 2vw;
-    background-color: rgb(181, 27, 0);
-    border: 1px solid black;
+    margin: 0 1vw;
+    background-color: rgb(218, 29, 0);
+    border: none;
     font-size: 5vh;
     border-radius: 3vh;
     text-align: center;
+    
+}
+
+
+#cardsButton{
+    background-color: rgb(218, 29, 0);
+    box-shadow: inset 0 0 0 0.2vh white;
 }
 
 #cardSelectionUI button:hover{
-    background-color: rgb(170, 22, 0);
+    background-color: rgb(243, 33, 1);
+    box-shadow: inset 0 0 0 0.3vh rgb(255, 195, 195);
+    cursor: pointer;
 }
 
 #activeCardsSection{
