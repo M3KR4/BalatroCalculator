@@ -1,10 +1,15 @@
 "use strict";
+const numerals = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+const suits = ['hearts', 'clubs', 'diamonds', 'spades'];
+const urls = ["../images/cards/lowRes", "../images/cards/highRes"];
 if (typeof document !== "undefined") {
     var cardSelectionButtons = document.getElementsByClassName("cardSelectionButtons");
     var prevClickedButton = document.getElementById("cardsButton");
-    setUpUI();
+    var highContrast = true;
+    setUpButtonUI();
+    setUpCards();
 }
-function setUpUI() {
+function setUpButtonUI() {
     for (let i = 0; i < cardSelectionButtons.length; i++) {
         cardSelectionButtons[i].addEventListener("click", function (e) {
             const buttonId = cardSelectionButtons[i].id;
@@ -15,12 +20,39 @@ function setUpUI() {
                 return;
             if (prevClickedButton === button)
                 return;
-            button.style.boxShadow = "inset 0 0 0 0.2vh white";
-            prevClickedButton.style.boxShadow = "none";
+            prevClickedButton.classList.remove("borderedButton");
+            button.classList.add("borderedButton");
             prevClickedButton = button;
             return;
         });
     }
+}
+function setUpCards() {
+    const cardsUI = document.querySelectorAll(".cardsUI");
+    if (!cardsUI)
+        return;
+    var url = 0;
+    let i = 0;
+    cardsUI.forEach(element => {
+        const currentI = i;
+        const currentUrl = url;
+        for (let j = 0; j < numerals.length; j++) {
+            const div = document.createElement("div");
+            div.style.backgroundImage = `url(${urls[currentUrl]}/${suits[currentI]}/${numerals[j]}.png)`;
+            div.addEventListener('click', function () {
+                console.log(url);
+                addCard(currentI, j, currentUrl);
+            });
+            if (!element)
+                return 0;
+            element.appendChild(div);
+        }
+        i++;
+        if (i > 3) {
+            i = 0;
+            url++;
+        }
+    });
 }
 const jokers = {
     active: {
@@ -47,3 +79,16 @@ const jokers = {
         names: []
     }
 };
+function addCard(suit, numeral, url) {
+    const activeCardsSection = document.getElementById("activeCardsSection");
+    if (!activeCardsSection)
+        return 0;
+    if (!document)
+        return 0;
+    const div = document.createElement("div");
+    console.log(url);
+    console.log(`${urls[url]}/${suits[suit]}/${numerals[numeral]}`);
+    div.style.backgroundImage = `url('${urls[url]}/${suits[suit]}/${numerals[numeral]}.png')`;
+    activeCardsSection.appendChild(div);
+    return "added card";
+}
