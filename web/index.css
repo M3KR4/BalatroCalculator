@@ -137,12 +137,14 @@ body{
 
 
 .cardsUI {
-  display: block;       
+  display: flex;       
   position: relative;
   overflow: visible;   
   width: 100%;         
   height: 12.5vh;         
-  padding-left: 0;      
+  padding-left: 0;  
+  justify-content: center;
+  align-items: center;    
 }
 
 
@@ -173,8 +175,8 @@ body{
   cursor: pointer;
   z-index: 11;
   background-size: 9.12vh 12.5vh;  
-  width: 9.12vh;                     
-  height: 12.5vh;    
+
+  transform: scale(1.05);   
 }
 
 .cardsUI > *:hover + * {
@@ -190,7 +192,7 @@ body{
     width: 100%;
     height: 20%;
     background-color: rgb(37, 37, 37);
-    float: left;
+    
     border-bottom-left-radius: 3vh;
     border-bottom-right-radius: 3vh;
     display: flex;
@@ -198,16 +200,45 @@ body{
     justify-content: center;
 }
 
-#activeCardsSection > *{
+
+
+
+
+.pickedCards{
+    align-self: baseline;
+}
+
+#currentCardsSection{
+    display: flex;
+    width: 80%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    float: left;
+}
+
+#currentCardsSection > *{
   
-  width: 10.95vh;                     
-  height: 15vh;                     
-  margin-left: 1vh;   
+  width: 9.49vh;                     
+  height: 13vh;                     
+  margin-left: 0.75vh;   
   box-shadow: 0 0 0 0.1vh rgb(63, 66, 92);          
   
   background-repeat: no-repeat;
-  background-size: 10.95vh 15vh;       
+  background-size: 9.49vh 13vh;       
   
   position: relative;
   z-index: 0;
+  
 }
+
+
+#currentCardsSection > *:hover{
+    cursor: pointer;
+    transform: scale(1.02);
+}
+
+.crampedCards{
+    margin: -1vh;
+}
+
