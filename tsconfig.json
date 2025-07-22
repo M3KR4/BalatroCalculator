@@ -1,10 +1,13 @@
 {
   "compilerOptions": {
-    "outDir": "./web",
-    "rootDir": "./src",
     "target": "es6",
-    "module": "commonjs",
-    "strict": true
+    "module": "esnext",   
+    "rootDir": "./src",           
+    "outDir": "./web",            
+    "strict": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "lib": ["es2017", "dom"]
   },
   "include": ["src/**/*"]
 }

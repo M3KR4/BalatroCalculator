@@ -153,7 +153,8 @@ body{
   width: 8.76vh;                     
   height: 12vh;                     
   margin-left: -2vh;   
-  box-shadow: 0 0 0 0.1vh rgb(63, 66, 92);          
+  box-shadow: 0 0 0 0.1vh rgb(63, 66, 92);    
+  border-radius: 0.4vh;    
   
   background-repeat: no-repeat;
   background-size: 8.76vh 12vh;       
@@ -183,9 +184,10 @@ body{
   margin-left: 0vh; 
 }
 
-.contrastTypes{
+#allCardsSection{
     width: 80%;
     height: 100%;
+    display: block;
 }
 
 #activeCardsSection{
@@ -222,10 +224,11 @@ body{
   width: 9.49vh;                     
   height: 13vh;                     
   margin-left: 0.75vh;   
-  box-shadow: 0 0 0 0.1vh rgb(63, 66, 92);          
+  box-shadow: inset 0 0 0 0.1vh rgb(63, 66, 92);   
+  border-radius: 0.4vh;       
   
-  background-repeat: no-repeat;
-  background-size: 9.49vh 13vh;       
+  background-repeat: no-repeat, no-repeat;
+  background-size: 9.49vh 13vh, 9.49vh 13vh;       
   
   position: relative;
   z-index: 0;
@@ -242,3 +245,86 @@ body{
     margin: -1vh;
 }
 
+#cardModifiersSection{
+    width: 30%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    float: left;
+}
+
+.cardModifiers {
+    width: calc(100% / 3 - 2%);
+    height: 80%;
+    display: block;
+    background-color: aliceblue;
+    text-align: center;
+}
+
+.modifierText {
+    font-size: 3vh;
+    width: 100%;
+    height: 15%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: baseline;
+    background-color: rgb(116, 116, 121);
+    box-shadow: 0 0 0 0.2vh black;
+    margin: 0;
+
+}
+
+.modifierSelect {
+    width: 100%;
+    height: 85%;
+    background-color: rgb(44, 44, 45);
+    margin: 0;
+
+    display: grid;
+    grid-template-columns: 50% 50%; 
+    justify-items: center;       
+    align-items: center;         
+    box-shadow: 0 0 0 0.2vh black;
+}
+
+.modifierIcon {
+    width: 95%;                    
+    aspect-ratio: 138 / 186;       
+    background-size: 100% 100%, 100% 100%;
+    background-repeat: no-repeat, no-repeat;
+    box-shadow: inset 0 0 0 0.3vh rgb(0, 0, 0);
+    border-radius: 1vh;
+}
+
+.modifierIcon:hover{
+    cursor: pointer;
+    box-shadow: inset 0 0 0 0.3vh rgb(255, 195, 195);
+}
+
+.chosenModifier{
+    box-shadow: inset 0 0 0 0.4vh rgb(0, 255, 0) !important;
+}
+
+.seals{
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    background-repeat: no-repeat;
+    background-size: contain;   
+    z-index: 2; 
+    position: absolute;
+}
+
+.editions{
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    opacity: 0.4;
+    background-repeat: no-repeat;
+    background-size: inherit;  
+    z-index: 1;  
+    position: absolute;
+    
+}

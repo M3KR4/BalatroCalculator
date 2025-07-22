@@ -1,2 +1,2 @@
 npx tsc
-node web/jokers.js
+node web/script/cards.js
