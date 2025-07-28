@@ -328,3 +328,25 @@ body{
     position: absolute;
     
 }
+
+#handType{
+    text-align: center;
+    color: white;
+    font-size: 7vh;
+    float: left;
+    width: 100%;
+}
+
+#scoreSection{
+    color: white;
+    float: left;
+    width: 100%;
+
+}
+
+#scoreSection > *{
+    width: 50%;
+    float: left;
+    color: white;
+    text-align: center;
+}

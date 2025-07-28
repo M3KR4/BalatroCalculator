@@ -1,4 +1,5 @@
 import { urls, cards, cardData } from '../data/gameObjects.js';
+import { updateCardType } from './handScoring.js';
 const numerals = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
 const suits = ['hearts', 'clubs', 'diamonds', 'spades'];
 var highContrast = true;
@@ -17,12 +18,23 @@ function setUpButtonUI() {
         cardSelectionButtons[i].addEventListener("click", function (e) {
             const buttonId = cardSelectionButtons[i].id;
             const button = document.getElementById(buttonId);
+            const sections = document.getElementsByClassName("editCardsSections");
             if (!button)
                 return;
             if (!prevClickedButton)
                 return;
             if (prevClickedButton === button)
                 return;
+            if (!sections)
+                return;
+            if (!sections[i].className.includes("selectedSection")) {
+                for (let j = 0; j < sections.length; j++) {
+                    if (!sections[j].className.includes("selectedSection"))
+                        continue;
+                    sections[j].classList.remove("selectedSection");
+                }
+            }
+            sections[i].classList.add("selectedSection");
             // Removes the class that gives a button a border and adds it to a newly clicked one
             prevClickedButton.classList.remove("borderedButton");
             button.classList.add("borderedButton");
@@ -51,8 +63,9 @@ function setUpCards() {
         backgroundUrl = 'url("../images/cards/background/cardBackground.png")';
     }
     else {
-        backgroundUrl = `url("../images/modifiers/enhancements/${cardData.modifiers.all[0][enhancementIndex]}.png")`;
-        console.log("test");
+        backgroundUrl = `url("../images/modifiers/enhancements/${cardData.modifiers.all.enhancements[enhancementIndex].name}.png")`;
+        if (!backgroundUrl)
+            return;
     }
     // Goes through every suit and numeral to add the cards
     cardsUI.forEach(element => {
@@ -70,7 +83,7 @@ function setUpCards() {
             const numeralUrl = `url(${urls.cardNumerals}/${contrast}/${suits[currentSuit]}/${numerals[currentNumeral]}.png)`;
             if (sealIndex !== -1) {
                 const seal = document.createElement("div");
-                const sealName = cardData.modifiers.seals[sealIndex];
+                const sealName = cardData.modifiers.all.seals[sealIndex].name;
                 const sealUrl = `url("../images/modifiers/seals/${sealName}.png")`;
                 seal.classList.add("seals");
                 seal.style.backgroundImage = `${sealUrl}`;
@@ -78,7 +91,7 @@ function setUpCards() {
             }
             if (editionIndex !== -1) {
                 const edition = document.createElement("div");
-                const editionName = cardData.modifiers.editions[editionIndex];
+                const editionName = cardData.modifiers.all.editions[editionIndex].name;
                 const editionUrl = `url("../images/modifiers/editions/${editionName}.png")`;
                 edition.classList.add("editions");
                 edition.style.backgroundImage = `${editionUrl}`;
@@ -103,17 +116,17 @@ function setUpModifiers() {
     const modifierUrl = urls.modifiers;
     if (!enhancementSelect || !sealSelect || !editionSelect)
         return 0;
-    const modifierKeys = Object.keys(cardData.modifiers);
+    const modifierKeys = Object.keys(cardData.modifiers.all);
     for (let i = 0; i < modifierKeys.length; i++) {
         const key = modifierKeys[i];
-        const modifierList = cardData.modifiers[key];
+        const modifierList = cardData.modifiers.all[key];
         const currentSelectedDOMObject = selectDOMObjects[i];
         if (!currentSelectedDOMObject || !modifierList)
             continue;
         for (let j = 0; j < modifierList.length; j++) {
             //Creates the modifier DOM object
             const div = document.createElement("div");
-            const backgroundUrl = `${modifierUrl}/${key}/${modifierList[j]}.png`;
+            const backgroundUrl = `${modifierUrl}/${key}/${modifierList[j].name}.png`;
             if (!backgroundUrl)
                 continue;
             div.classList.add("modifierIcon");
@@ -163,7 +176,9 @@ function addCard(suit, numeral) {
     const sealIndex = cardData.modifiers.chosenModifiersArr[1];
     const editionIndex = cardData.modifiers.chosenModifiersArr[2];
     if (enhancementIndex !== -1) {
-        const enhancementName = cardData.modifiers.enhancements[enhancementIndex];
+        const enhancementName = cardData.modifiers.all.enhancements[enhancementIndex].name;
+        if (!enhancementName)
+            return;
         backgroundImageUrl = `url("../images/modifiers/enhancements/${enhancementName}.png")`;
     }
     else {
@@ -172,7 +187,9 @@ function addCard(suit, numeral) {
     numeralUrl = `url("${urls.cardNumerals}/${contrast}/${suits[suit]}/${numerals[numeral]}.png")`;
     if (sealIndex !== -1) {
         const seal = document.createElement("div");
-        const sealName = cardData.modifiers.seals[sealIndex];
+        const sealName = cardData.modifiers.all.seals[sealIndex].name;
+        if (!sealName)
+            return;
         const sealUrl = `url("../images/modifiers/seals/${sealName}.png")`;
         seal.classList.add("seals");
         seal.style.backgroundImage = sealUrl;
@@ -180,7 +197,9 @@ function addCard(suit, numeral) {
     }
     if (editionIndex !== -1) {
         const edition = document.createElement("div");
-        const editionName = cardData.modifiers.editions[editionIndex];
+        const editionName = cardData.modifiers.all.editions[editionIndex].name;
+        if (!editionName)
+            return;
         const editionUrl = `url("../images/modifiers/editions/${editionName}.png")`;
         edition.classList.add("editions");
         edition.style.backgroundImage = `${editionUrl}`;
@@ -207,7 +226,7 @@ function addCard(suit, numeral) {
     });
     activeCardsSection.appendChild(div);
     createCardObject(div, suit, numeral);
-    shuffleCards();
+    sortAllCards();
     if (div.clientWidth < cardWidth) {
         var children = document.querySelectorAll("#currentCardsSection > *");
         if (!children)
@@ -227,6 +246,7 @@ function selectCard(object) {
         DOMObject: object
     };
     cards.hand.active.push(newActiveCard);
+    updateCardType();
 }
 function deselectCard(object) {
     if (!object)
@@ -237,6 +257,7 @@ function deselectCard(object) {
         DOMObject: object
     };
     cards.hand.inactive.push(newInactiveCard);
+    updateCardType();
 }
 function createCardObject(object, suitNumber, numeralNumber) {
     const enhancement = cardData.modifiers.chosenModifiersArr[0];
@@ -272,9 +293,9 @@ function removeCardObject(object) {
     cards.hand.all = objectPath.filter(card => card.DOMObject !== object);
     return 0;
 }
-function shuffleCards() {
+export function sortAllCards() {
     var _a, _b;
-    const allCards = cards.hand.all;
+    var allCards = cards.hand.all;
     const sortedCards = [...allCards].sort((a, b) => {
         const valA = cardData.sortNumber[a.number];
         const valB = cardData.sortNumber[b.number];
@@ -294,4 +315,5 @@ function shuffleCards() {
     sortedCards.forEach((card, index) => {
         card.order = index;
     });
+    return sortedCards;
 }
