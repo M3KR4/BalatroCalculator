@@ -30,14 +30,14 @@ export const cardData = {
     sortNumber: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
     sortSuit: [1, 2, 3, 0],
     modifiers: {
-        enhancements: ['bonus', 'mult', 'wild', 'glass', 'steel', 'stone', 'gold', 'lucky'],
-        seals: ['gold', 'red', 'blue', 'purple'],
-        editions: ['foil', 'holographic', 'polychrome'],
+        enhancements: ["bonus", "mult", "wild", "glass", "steel", "stone", "gold", "lucky"],
+        seals: ["gold", "red", "blue", "purple"],
+        editions: ["foil", "holographic", "polychrome"],
         chosenModifiersArr: [-1, -1, -1], // Enhancement, Seal, Edition
         all: {
-            enhancements: [{ name: 'bonus', amount: 30, type: "chips" }, { name: 'mult', amount: 4, type: "mult" }, { name: 'wild' }, { name: 'glass', amount: 2, type: "xMult" }, { name: 'steel', amount: 1.5, type: "xMult" }, { name: 'stone', amount: 50, type: "chips" }, { name: 'gold', amount: 3, type: "money" }, { name: 'lucky', amount1: 20, type1: "mult", amount2: 20, type2: "money" }],
-            seals: [{ name: 'gold', amount: 3, type: "money" }, { name: 'red' }, { name: 'blue', amount: 1, type: "planet" }, { name: 'purple', amount: 1, type: "tarot" }],
-            editions: [{ name: 'foil', amount: 50, type: "chips" }, { name: 'holographic', amount: 10, type: "mult" }, { name: 'polychrome', amount: 1.5, type: "xMult" }]
+            enhancements: [{ name: "bonus", amount: 30, type: "chips", condition: "inPlay" }, { name: "mult", amount: 4, type: "mult", condition: "inPlay" }, { name: "wild", condition: "inPlay" }, { name: "glass", amount: 2, type: "xMult", condition: "inPlay" }, { name: "steel", amount: 1.5, type: "xMult", condition: "inHand" }, { name: "stone", amount: 50, type: "chips", condition: "inPlay" }, { name: "gold", amount: 3, type: "money", condition: "inHand" }, { name: "lucky", amount: 20, type1: "mult", amount2: 20, type2: "money", condition: "inPlay" }],
+            seals: [{ name: "gold", amount: 3, type: "money", condition: "inPlay" }, { name: "red", condition: "inPlay" }, { name: "blue", amount: 1, type: "planet", condition: "inHand" }, { name: "purple", amount: 1, type: "tarot", condition: "inDiscard" }],
+            editions: [{ name: "foil", amount: 50, type: "chips", condition: "inPlay" }, { name: "holographic", amount: 10, type: "mult", condition: "inPlay" }, { name: "polychrome", amount: 1.5, type: "xMult", condition: "inPlay" }]
         }
     },
     currentHand: {
@@ -47,8 +47,8 @@ export const cardData = {
             chips: 0,
             mult: 0,
             money: 0,
-            tarots: 0,
-            planets: 0,
+            tarot: 0,
+            planet: 0,
         }
     },
     hands: [

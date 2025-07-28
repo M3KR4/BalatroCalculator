@@ -55,7 +55,6 @@ export function updateCardType() {
         else if (finalScoredHand[i].length > longestHand[0]) {
             if (longestHand[0] > secondLongestHand[0]) {
                 secondLongestHand[0] = longestHand[0];
-                console.log("hi");
             }
             longestHand[0] = finalScoredHand[i].length;
             longestHand[1] = i;
@@ -69,8 +68,6 @@ export function updateCardType() {
     var sortedHand;
     const isFullHouse = (finalScoredHand[longestHandIndex] && finalScoredHand[secondLongestHandIndex] &&
         (longestHand[0] === 3 && secondLongestHand[0] === 2));
-    console.log(longestHand[0], secondLongestHand[0]);
-    console.log(finalScoredHand);
     const isTwoPair = (finalScoredHand[longestHandIndex] && finalScoredHand[secondLongestHandIndex] &&
         longestHand[0] === 2 && secondLongestHand[0] === 2);
     if (isFullHouse)
@@ -108,7 +105,9 @@ export function updateCardType() {
             break;
         }
     }
-    cardData.currentHand.allCards = sortedHand;
+    if (!flush && !straight) {
+        cardData.currentHand.allCards = sortedHand;
+    }
     const handTypeText = document.getElementById("handType");
     if (!handTypeText)
         return finalScoredHand;
@@ -149,13 +148,14 @@ function isStraight() {
     const scoredHand = sortActiveCards();
     if (!scoredHand)
         return;
-    const requiredCards = 4;
-    var hands = [];
-    hands.push(scoredHand[0]);
+    const requiredCards = 5;
     var finalHand = [];
     if (scoredHand.length < 4)
         return false;
-    for (let i = scoredHand.length - 1; i > 0; i--) {
+    for (let i = scoredHand.length - 1; i >= 0; i--) {
+        if (finalHand.length >= 5) {
+            break;
+        }
         if (scoredHand[i].number === 0 && scoredHand[0].number === 14) {
             finalHand.push(scoredHand[i], scoredHand[0]);
             continue;
@@ -222,8 +222,8 @@ function scoreCard(card) {
         "chips",
         "mult",
         "money",
-        "tarots",
-        "planets",
+        "tarot",
+        "planet",
     ];
     const localScoredItems = {
         chips: { name: "", amount: 0, cardDataPath: "" },
@@ -233,9 +233,9 @@ function scoreCard(card) {
         planet: { name: "", amount: 0, cardDataPath: "" },
     };
     const itemsAsArray = Object.values(localScoredItems);
+    const cardDataAsArrayItems = Object.values(cardDataPath.items);
     let i = 0;
     itemNames.forEach(path => {
-        const cardDataAsArrayItems = Object.values(cardDataPath.items);
         itemsAsArray[i].name = path;
         itemsAsArray[i].amount = cardDataAsArrayItems[i];
         itemsAsArray[i].cardDataPath = `cardDataPath.items.${itemNames[i]}`;
@@ -247,7 +247,31 @@ function scoreCard(card) {
     const tarotPath = localScoredItems.tarot;
     const planetPath = localScoredItems.planet;
     chipsPath.amount += cardData.cardValues[card.number];
-    if (card.modifiers[0] !== -1) {
+    for (let i = 0; i < card.modifiers.length; i++) {
+        if (card.modifiers[i] !== -1) {
+            const cardDataEnhancement = cardData.modifiers.all.enhancements[card.modifiers[i]];
+            if (cardDataEnhancement.name === "lucky")
+                break; // fuck this shit specifically give me a break man
+            if (!cardDataEnhancement)
+                return;
+            var isCondition = -1;
+            if (cardDataEnhancement.condition === "inPlay") {
+                isCondition = cardData.currentHand.allCards.findIndex(currentCard => currentCard === card);
+            }
+            else if (cardDataEnhancement.condition === "inHand") {
+                isCondition = cards.hand.inactive.findIndex(currentCard => currentCard === card);
+            }
+            if (isCondition !== -1) {
+                if (cardDataEnhancement.amount && cardDataEnhancement.type !== "xMult") {
+                    const itemIndex = itemNames.findIndex(item => item === cardDataEnhancement.type);
+                    itemsAsArray[itemIndex].amount += cardDataEnhancement.amount;
+                }
+                else if (cardDataEnhancement.type === "xMult") {
+                    const itemIndex = itemNames.findIndex(item => item === "mult");
+                    itemsAsArray[itemIndex].amount *= cardDataEnhancement.amount;
+                }
+            }
+        }
     }
     cardData.currentHand.items.chips = chipsPath.amount;
     cardData.currentHand.items.mult = multPath.amount;
