@@ -1,14 +1,22 @@
 @echo off
+setlocal
 
-:: Type 'push' to push into github with deafult commit name
-:: Type 'push "custom commit name"' to push into github with custom commit name
+:: Type 'push' to push into GitHub with default commit message
+:: Type 'push "custom commit message"' to push into GitHub with custom commit message
 
 if "%~1"=="" (
     git add .
     git commit -m "I probably fixed something I dunno"
-    git push origin master:main
 ) else (
     git add .
     git commit -m %1
-    git push origin master:main
 )
+
+git push origin master:main
+if %ERRORLEVEL% NEQ 0 (
+    echo.
+    echo [!] Normal push failed. Attempting force push...
+    git push --force origin master:main
+)
+
+endlocal

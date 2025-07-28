@@ -81,7 +81,6 @@ export function updateCardType() {
 
              if(longestHand[0] > secondLongestHand[0]){
                 secondLongestHand[0] = longestHand[0];
-                console.log("hi")
              }
 
             longestHand[0] = finalScoredHand[i].length;
