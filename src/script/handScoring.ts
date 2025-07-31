@@ -53,8 +53,14 @@ export function updateCardType() {
     var finalScoredHand: Card[][] = [];
     var longestHand = [0, 0]; // Length of same cards, Index
     var secondLongestHand = [0, 0];
+    const stoneModifierIndex = cardData.modifiers.all.enhancements.findIndex(modifier => modifier.name === "stone");
+    var stoneCards : Card[] = [];
 
     scoredHand.forEach(card => {
+        if(card.modifiers[0] === stoneModifierIndex){
+            stoneCards.push(card);
+            return;
+        }
         var isNew: boolean = true;
 
         if (finalScoredHand.length != 0) {
@@ -138,7 +144,7 @@ export function updateCardType() {
         { name: "Three Of A Kind", condition: longestHand[0] === 3 },
         { name: "Two Pair", condition: canBeTwoPair },
         { name: "Pair", condition: longestHand[0] === 2 },
-        { name: "High Card", condition: true },
+        { name: "High Card", condition: true }
     ];
 
 
@@ -153,7 +159,13 @@ export function updateCardType() {
         cardData.currentHand.allCards = sortedHand;
     }
 
+    if(cardData.currentHand.allCards && stoneCards.length!==0){
+        cardData.currentHand.allCards = cardData.currentHand.allCards.concat(stoneCards);
+    }else if(stoneCards.length!==0){
+        cardData.currentHand.allCards = stoneCards;
+    }
 
+    
 
     const handTypeText: HTMLElement | null = document.getElementById("handType");
 
@@ -171,6 +183,7 @@ function isFlush() {
 
     const scoredHand: Card[] | undefined = sortActiveCards();
     const flushModifierIndex = cardData.modifiers.all.enhancements.findIndex(modifier => modifier.name === "flush");
+    const stoneModifierIndex = cardData.modifiers.all.enhancements.findIndex(modifier => modifier.name === "stone");
     
     if (!scoredHand) return;
 
@@ -179,11 +192,12 @@ function isFlush() {
     var suits: Card[][] = [];
 
     scoredHand.forEach(card => {
+        if(card.modifiers[0] === stoneModifierIndex) return;
         var isNew: boolean = true;
 
         if (suits.length !== 0) {
             for (let i = 0; i < suits.length; i++) {
-                if (suits[i][0].suit === card.suit || card.modifiers[0] === flushModifierIndex) {
+                if ((suits[i][0].suit === card.suit || card.modifiers[0] === flushModifierIndex)) {
                     suits[i].push(card);
                     isNew = false;
                 }
@@ -216,6 +230,8 @@ function isStraight() {
     const scoredHand: Card[] | undefined = sortActiveCards();
     if (!scoredHand) return;
 
+    const stoneModifierIndex = cardData.modifiers.all.enhancements.findIndex(modifier => modifier.name === "stone");
+
     const requiredCards: number = 5;
 
     var finalHand: Card[] = []
@@ -224,11 +240,12 @@ function isStraight() {
 
 
     for (let i = scoredHand.length - 1; i >= 0; i--) {
-        if (finalHand.length >= 5) {
+        if (finalHand.length >= 5 || scoredHand[i].modifiers[0] === stoneModifierIndex) {
             break;
         }
 
-        if (scoredHand[i].number === 0 && scoredHand[0].number === 14) {
+        if ((scoredHand[i].number === 0 && scoredHand[0].number === 14) && scoredHand[0].modifiers[0] !== stoneModifierIndex) {
+
             finalHand.push(scoredHand[i], scoredHand[0]);
             continue;
         }
@@ -331,15 +348,36 @@ function scoreHand() {
     const mult: string = formatValue(items.mult);
     const finalScore: string = formatValue(score);
 
-    const chipsDOMObject = document.getElementById("chipsAmount");
-    const multDOMObject = document.getElementById("multAmount");
-    const finalScoreDOMObject = document.getElementById("finalScore");
+    const chipsDOMObject : HTMLElement | null = document.getElementById("chipsAmount");
+    const multDOMObject : HTMLElement | null = document.getElementById("multAmount");
+    const finalScoreDOMObject : HTMLElement | null = document.getElementById("finalScore");
+    const tarotDOMObject : HTMLElement | null = document.getElementById("tarotAmount");
+    const planetDOMObject : HTMLElement | null = document.getElementById("planetAmount");
+    const moneyDOMObject : HTMLElement | null = document.getElementById("moneyAmount");
 
-    if (!chipsDOMObject || !multDOMObject || !finalScoreDOMObject) return;
+    const itemData = [
+        ["Chips", chipsDOMObject, chips],
+        ["Mult", multDOMObject, mult],
+        ["Score", finalScoreDOMObject, finalScore],
+        ["Tarots", tarotDOMObject, items.tarot],
+        ["Planets", planetDOMObject, items.planet],
+        ["Money", moneyDOMObject, items.money]
+    ]
 
-    chipsDOMObject.innerHTML = `Chips: <br>${(chips).toString()}`;
-    multDOMObject.innerHTML = `Mult: <br>${(mult).toString()}`;
-    finalScoreDOMObject.innerHTML = `Score: <br>${finalScore.toString()}`;
+    for(let i = 0; i<itemData.length; i++){
+        var name = itemData[i][0];
+        var DOMObject = itemData[i][1];
+        var amount = itemData[i][2];
+
+
+        if(!amount || !name || !DOMObject || typeof DOMObject !== "object") continue;
+
+
+        amount = amount.toString();
+        
+        DOMObject.innerHTML = `${name}: <br>${amount}`
+
+    }
 
 }
 
@@ -428,7 +466,7 @@ function scoreCard(card: Card, isRepeated: boolean) {
     return;
 }
 
-function restartValues() {
+export function restartValues() {
     Object.keys(cardData.currentHand.items).forEach(key => {
         cardData.currentHand.items[key as keyof typeof cardData.currentHand.items] = 0;
     });
@@ -436,17 +474,21 @@ function restartValues() {
     cardData.currentHand.allCards = null;
     cardData.currentHand.handType = "High Card";
 
-    const highCardValues = cardData.hands.find(handType => handType.name === cardData.currentHand.handType);
+    const valuesDOM = document.querySelectorAll(".values");
+    const handTypeDOM = document.getElementById("handType");
+    if (!valuesDOM || !handTypeDOM) return;
 
-    const chipsDOMObject = document.getElementById("chipsAmount");
-    const multDOMObject = document.getElementById("multAmount");
-    const finalScoreDOMObject = document.getElementById("finalScore");
+    const itemNames = ["Chips", "Mult", "Score", "Tarots", "Money", "Planets"]
 
-    if (!chipsDOMObject || !multDOMObject || !highCardValues || !finalScoreDOMObject) return;
+    let i = 0;
 
-    chipsDOMObject.innerHTML = `Chips: <br>${(highCardValues.chips).toString()}`;
-    multDOMObject.innerHTML = `Mult: <br>${(highCardValues.mult).toString()}`;
-    finalScoreDOMObject.innerHTML = `Score: <br>5 `
+    valuesDOM.forEach(element => {
+        element.innerHTML = `${itemNames[i]}: <br> 0`;
+
+        i++;
+    });
+
+    handTypeDOM.innerHTML = cardData.currentHand.handType;
 }
 
 function formatValue(value: number) {

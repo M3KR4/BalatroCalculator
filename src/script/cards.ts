@@ -1,5 +1,5 @@
 import { urls, cards, cardData, Card, CardId } from '../data/gameObjects.js';
-import { updateCardType } from './handScoring.js';
+import { updateCardType, restartValues } from './handScoring.js';
 
 const numerals: string[] = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
 const suits: string[] = ['hearts', 'clubs', 'diamonds', 'spades'];
@@ -18,6 +18,7 @@ if (typeof document !== "undefined") {
   setUpButtonUI();
   setUpCards();
   setUpModifiers();
+  restartValues();
 
 
 }

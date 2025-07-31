@@ -350,11 +350,17 @@ body{
     color: white;
     text-align: center;
     font-size: 3.6vh;
+    box-shadow: 0 0 0 0.2vh inset black;
+}
+
+#scoreSection > .smallAmountBox{
+    width: calc(100%/3);
 }
 
 #scoreSection > #finalScore{
     width: 100%;
     font-size: 6vh;
+    box-shadow: none;
 }
 
 #chipsAmount{
@@ -367,4 +373,18 @@ body{
 
 #finalScore{
     background-color: rgb(56, 56, 56);
+}
+
+
+
+#tarotAmount{
+    background-color: rgb(147, 112, 199);
+}
+
+#planetAmount{
+    background-color: rgb(3, 147, 183);
+}
+
+#moneyAmount{
+    background-color: rgb(242, 144, 2);
 }

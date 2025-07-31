@@ -1,5 +1,5 @@
 import { urls, cards, cardData } from '../data/gameObjects.js';
-import { updateCardType } from './handScoring.js';
+import { updateCardType, restartValues } from './handScoring.js';
 const numerals = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
 const suits = ['hearts', 'clubs', 'diamonds', 'spades'];
 var highContrast = true;
@@ -11,6 +11,7 @@ if (typeof document !== "undefined") {
     setUpButtonUI();
     setUpCards();
     setUpModifiers();
+    restartValues();
 }
 // Makes buttons do button stuff (adding a border to the last clicked button)
 function setUpButtonUI() {
