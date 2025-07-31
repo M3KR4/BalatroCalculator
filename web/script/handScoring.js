@@ -117,6 +117,7 @@ export function updateCardType() {
 }
 function isFlush() {
     const scoredHand = sortActiveCards();
+    const flushModifierIndex = cardData.modifiers.all.enhancements.findIndex(modifier => modifier.name === "flush");
     if (!scoredHand)
         return;
     const requiredCards = 5;
@@ -125,7 +126,7 @@ function isFlush() {
         var isNew = true;
         if (suits.length !== 0) {
             for (let i = 0; i < suits.length; i++) {
-                if (suits[i][0].suit === card.suit) {
+                if (suits[i][0].suit === card.suit || card.modifiers[0] === flushModifierIndex) {
                     suits[i].push(card);
                     isNew = false;
                 }
@@ -178,7 +179,7 @@ function isStraight() {
     return false;
 }
 function sortByOrder(cards) {
-    if (!cards || cards.length === 1)
+    if (!cards)
         return cards;
     var newCardsArray = [];
     var lowestOrderIndex;
@@ -203,78 +204,102 @@ function scoreHand() {
     cardData.currentHand.items.chips = handObject.chips;
     cardData.currentHand.items.mult = handObject.mult;
     cardData.currentHand.allCards.forEach(card => {
-        scoreCard(card);
+        scoreCard(card, false);
     });
-    const chips = cardData.currentHand.items.chips;
-    const mult = cardData.currentHand.items.mult;
+    var inactiveCardsArray = [];
+    cards.hand.inactive.forEach(card => {
+        const inactiveCard = cards.hand.all.find(currentCard => currentCard.DOMObject === card.DOMObject);
+        if (!inactiveCard)
+            return;
+        inactiveCardsArray.push(inactiveCard);
+    });
+    const sortedInactiveCardsArray = sortByOrder(inactiveCardsArray);
+    if (sortedInactiveCardsArray) {
+        sortedInactiveCardsArray.forEach(card => {
+            scoreCard(card, false);
+        });
+    }
+    const items = cardData.currentHand.items;
+    var score = Number((items.chips * items.mult).toFixed(0));
+    items.chips = Number((items.chips).toFixed(2));
+    items.mult = Number((items.mult).toFixed(2));
+    const chips = formatValue(items.chips);
+    const mult = formatValue(items.mult);
+    const finalScore = formatValue(score);
     const chipsDOMObject = document.getElementById("chipsAmount");
     const multDOMObject = document.getElementById("multAmount");
-    if (!chipsDOMObject || !multDOMObject)
+    const finalScoreDOMObject = document.getElementById("finalScore");
+    if (!chipsDOMObject || !multDOMObject || !finalScoreDOMObject)
         return;
-    chipsDOMObject.innerHTML = `Chips: ${(chips).toString()}`;
-    multDOMObject.innerHTML = `Mult: ${(mult).toString()}`;
+    chipsDOMObject.innerHTML = `Chips: <br>${(chips).toString()}`;
+    multDOMObject.innerHTML = `Mult: <br>${(mult).toString()}`;
+    finalScoreDOMObject.innerHTML = `Score: <br>${finalScore.toString()}`;
 }
-function scoreCard(card) {
+function scoreCard(card, isRepeated) {
     if (!card || !cardData.currentHand.allCards)
         return;
-    const cardDataPath = cardData.currentHand;
-    const itemNames = [
-        "chips",
-        "mult",
-        "money",
-        "tarot",
-        "planet",
-    ];
-    const localScoredItems = {
-        chips: { name: "", amount: 0, cardDataPath: "" },
-        mult: { name: "", amount: 0, cardDataPath: "" },
-        money: { name: "", amount: 0, cardDataPath: "" },
-        tarot: { name: "", amount: 0, cardDataPath: "" },
-        planet: { name: "", amount: 0, cardDataPath: "" },
-    };
-    const itemsAsArray = Object.values(localScoredItems);
-    const cardDataAsArrayItems = Object.values(cardDataPath.items);
-    let i = 0;
-    itemNames.forEach(path => {
-        itemsAsArray[i].name = path;
-        itemsAsArray[i].amount = cardDataAsArrayItems[i];
-        itemsAsArray[i].cardDataPath = `cardDataPath.items.${itemNames[i]}`;
-        i++;
-    });
-    const chipsPath = localScoredItems.chips;
-    const multPath = localScoredItems.mult;
-    const moneyPath = localScoredItems.money;
-    const tarotPath = localScoredItems.tarot;
-    const planetPath = localScoredItems.planet;
-    chipsPath.amount += cardData.cardValues[card.number];
+    if (cardData.currentHand.allCards.findIndex(currentCard => currentCard === card) !== -1) {
+        cardData.currentHand.items.chips += cardData.cardValues[card.number];
+    }
     for (let i = 0; i < card.modifiers.length; i++) {
         if (card.modifiers[i] !== -1) {
-            const cardDataEnhancement = cardData.modifiers.all.enhancements[card.modifiers[i]];
-            if (cardDataEnhancement.name === "lucky")
-                break; // fuck this shit specifically give me a break man
-            if (!cardDataEnhancement)
+            const items = cardData.currentHand.items;
+            const cardDataModifiersAsArray = Object.values(cardData.modifiers.all);
+            const cardDataModifier = Object.values(cardDataModifiersAsArray[i])[card.modifiers[i]];
+            const isLucky = (cardDataModifier.name === "lucky");
+            if (!cardDataModifier)
                 return;
             var isCondition = -1;
-            if (cardDataEnhancement.condition === "inPlay") {
+            const includesInPlay = cardDataModifier.condition.includes("inPlay");
+            const includesInHand = cardDataModifier.condition.includes("inHand");
+            if (includesInPlay && includesInHand) {
+                var isConditionA = cardData.currentHand.allCards.findIndex(currentCard => currentCard === card);
+                var isConditionB = isCondition = cards.hand.inactive.findIndex(currentCard => currentCard.DOMObject === card.DOMObject);
+                if (isConditionA !== -1)
+                    isCondition = isConditionA;
+                if (isConditionB !== -1)
+                    isCondition = isConditionB;
+                if (isConditionA === -1 && isConditionB === -1)
+                    isCondition = -1;
+            }
+            else if (cardDataModifier.condition.includes("inPlay")) {
                 isCondition = cardData.currentHand.allCards.findIndex(currentCard => currentCard === card);
             }
-            else if (cardDataEnhancement.condition === "inHand") {
-                isCondition = cards.hand.inactive.findIndex(currentCard => currentCard === card);
+            else if (cardDataModifier.condition.includes("inHand")) {
+                isCondition = cards.hand.inactive.findIndex(currentCard => currentCard.DOMObject === card.DOMObject);
             }
-            if (isCondition !== -1) {
-                if (cardDataEnhancement.amount && cardDataEnhancement.type !== "xMult") {
-                    const itemIndex = itemNames.findIndex(item => item === cardDataEnhancement.type);
-                    itemsAsArray[itemIndex].amount += cardDataEnhancement.amount;
-                }
-                else if (cardDataEnhancement.type === "xMult") {
-                    const itemIndex = itemNames.findIndex(item => item === "mult");
-                    itemsAsArray[itemIndex].amount *= cardDataEnhancement.amount;
-                }
+            if (isCondition === -1)
+                break;
+            if (cardDataModifier.name === "lucky") {
+                const luckyModifier = cardData.modifiers.all.enhancements.find(modifier => modifier.name === "lucky");
+                if (!luckyModifier)
+                    return;
+                const value1 = luckyModifier.amount;
+                const value2 = luckyModifier.amount2;
+                const chance1 = luckyModifier.chance;
+                const chance2 = luckyModifier.chance2;
+                const type1 = luckyModifier.type;
+                const type2 = luckyModifier.type2;
+                if (!value1 || !value2 || !chance1 || !chance2 || !type1 || !type2)
+                    return;
+                items[type1] += randomEvent(value1, chance1, type1).avg;
+                items[type2] += randomEvent(value2, chance2, type2).avg;
+            }
+            else if (cardDataModifier.type !== "xMult" && cardDataModifier.type) {
+                if (!cardDataModifier.amount)
+                    return;
+                items[cardDataModifier.type] += cardDataModifier.amount;
+            }
+            else if (cardDataModifier.type === "xMult") {
+                if (!cardDataModifier.amount)
+                    return;
+                items["mult"] *= cardDataModifier.amount;
+            }
+            if (cardDataModifier.name === "red" && !isRepeated) {
+                scoreCard(card, true);
             }
         }
     }
-    cardData.currentHand.items.chips = chipsPath.amount;
-    cardData.currentHand.items.mult = multPath.amount;
     return;
 }
 function restartValues() {
@@ -286,8 +311,25 @@ function restartValues() {
     const highCardValues = cardData.hands.find(handType => handType.name === cardData.currentHand.handType);
     const chipsDOMObject = document.getElementById("chipsAmount");
     const multDOMObject = document.getElementById("multAmount");
-    if (!chipsDOMObject || !multDOMObject || !highCardValues)
+    const finalScoreDOMObject = document.getElementById("finalScore");
+    if (!chipsDOMObject || !multDOMObject || !highCardValues || !finalScoreDOMObject)
         return;
-    chipsDOMObject.innerHTML = `Chips: ${(highCardValues.chips).toString()}`;
-    multDOMObject.innerHTML = `Mult: ${(highCardValues.mult).toString()}`;
+    chipsDOMObject.innerHTML = `Chips: <br>${(highCardValues.chips).toString()}`;
+    multDOMObject.innerHTML = `Mult: <br>${(highCardValues.mult).toString()}`;
+    finalScoreDOMObject.innerHTML = `Score: <br>5 `;
+}
+function formatValue(value) {
+    if (value >= cardData.scientificNotationThreshold) {
+        var newValue = value.toExponential(3);
+        var indexOfPlus = newValue.indexOf("+");
+        newValue = newValue.substring(0, indexOfPlus) + newValue.substring(indexOfPlus + 1);
+        return newValue;
+    }
+    return value.toLocaleString();
+}
+function randomEvent(amount, chance, type) {
+    const avg = amount * chance;
+    const median = (chance >= 1 / 2) ? amount : 0;
+    const object = { avg: avg, median: median, max: amount, type: type };
+    return object;
 }

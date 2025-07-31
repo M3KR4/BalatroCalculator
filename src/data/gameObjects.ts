@@ -11,7 +11,9 @@ export type CardId = {
   DOMObject: HTMLElement
 }
 
-
+export function radnom(min: number, max : number){
+  return Number((Math.random()*(max+min)).toFixed());
+}
 
 export const jokers = {
   active: {
@@ -49,6 +51,7 @@ export const cardData = {
   suits: ['hearts', 'clubs', 'diamonds', 'spades'] as string[],
   sortNumber: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14] as number[],
   sortSuit: [1, 2, 3, 0] as number[],
+  scientificNotationThreshold: Math.pow(10, 11) as number,
 
 
 
@@ -58,10 +61,11 @@ export const cardData = {
     seals: ["gold", "red", "blue", "purple"] as string[],
     editions: ["foil", "holographic", "polychrome"] as string[],
     chosenModifiersArr: [-1, -1, -1] as number[], // Enhancement, Seal, Edition
+    
 
     all: {
-      enhancements: [{ name: "bonus", amount: 30, type: "chips", condition: "inPlay" }, { name: "mult", amount: 4, type: "mult", condition: "inPlay" }, { name: "wild", condition: "inPlay" }, { name: "glass", amount: 2, type: "xMult", condition: "inPlay" }, { name: "steel", amount: 1.5, type: "xMult", condition: "inHand" }, { name: "stone", amount: 50, type: "chips", condition: "inPlay" }, { name: "gold", amount: 3, type: "money", condition: "inHand" }, { name: "lucky", amount: 20, type1: "mult", amount2: 20, type2: "money", condition: "inPlay" }],
-      seals: [{ name: "gold", amount: 3, type: "money", condition: "inPlay" }, { name: "red", condition: "inPlay" }, { name: "blue", amount: 1, type: "planet", condition: "inHand" }, { name: "purple", amount: 1, type: "tarot", condition: "inDiscard" }],
+      enhancements: [{ name: "bonus", amount: 30, type: "chips", condition: "inPlay" }, { name: "mult", amount: 4, type: "mult", condition: "inPlay" }, { name: "wild", condition: "inPlay" }, { name: "glass", amount: 2, type: "xMult", condition: "inPlay" }, { name: "steel", amount: 1.5, type: "xMult", condition: "inHand" }, { name: "stone", amount: 50, type: "chips", condition: "inPlay" }, { name: "gold", amount: 3, type: "money", condition: "inHand" }, { name: "lucky", amount: 20, type: "mult", chance: 1/5, amount2: 20, type2: "money", chance2: 1/20, condition: "inPlay" }],
+      seals: [{ name: "gold", amount: 3, type: "money", condition: "inPlay" }, { name: "red", condition: "inPlay inHand" }, { name: "blue", amount: 1, type: "planet", condition: "inHand" }, { name: "purple", amount: 1, type: "tarot", condition: "inDiscard" }],
       editions: [{ name: "foil", amount: 50, type: "chips", condition: "inPlay" }, { name: "holographic", amount: 10, type: "mult", condition: "inPlay" }, { name: "polychrome", amount: 1.5, type: "xMult", condition: "inPlay" }]
     }
   },

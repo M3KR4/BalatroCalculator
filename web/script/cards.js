@@ -235,6 +235,7 @@ function addCard(suit, numeral) {
             child.classList.add("crampedCards");
         });
     }
+    updateCardType();
     return "added card";
 }
 function selectCard(object) {
@@ -291,6 +292,7 @@ function removeCardObject(object) {
         }
     }
     cards.hand.all = objectPath.filter(card => card.DOMObject !== object);
+    updateCardType();
     return 0;
 }
 export function sortAllCards() {

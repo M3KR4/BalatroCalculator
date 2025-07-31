@@ -48,7 +48,7 @@ body{
 }
 
 #infoSection{
-    width: 65%;
+    width: 90%;
     height: 100%;
     background-color: rgb(38, 39, 43);
     display: block;
@@ -349,4 +349,22 @@ body{
     float: left;
     color: white;
     text-align: center;
+    font-size: 3.6vh;
+}
+
+#scoreSection > #finalScore{
+    width: 100%;
+    font-size: 6vh;
+}
+
+#chipsAmount{
+    background-color: rgb(0, 144, 252);
+}
+
+#multAmount{
+    background-color: rgb(250, 74, 63);
+}
+
+#finalScore{
+    background-color: rgb(56, 56, 56);
 }

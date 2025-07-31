@@ -304,7 +304,7 @@ function addCard(suit: number, numeral: number) {
 
   }
 
-  
+  updateCardType();
 
   return "added card";
 }
@@ -395,7 +395,7 @@ function removeCardObject(object: HTMLElement) {
   }
 
   cards.hand.all = objectPath.filter(card => card.DOMObject !== object);
-
+  updateCardType();
   return 0;
 }
 
