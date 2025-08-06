@@ -1,18 +1,12 @@
 import { cards, cardData, Card, CardId } from '../data/gameObjects.js';
 
-
-
-
-
-
-
 function sortActiveCards() {
     var activeCards: CardId[] = cards.hand.active;
 
     var cardObjects: Card[] = [];
 
     activeCards.forEach(card => {
-        const currCard = cards.hand.all.find(cardObject => cardObject.DOMObject === card.DOMObject);
+        const currCard: Card | undefined = cards.hand.all.find(cardObject => cardObject.DOMObject === card.DOMObject);
 
         if (currCard) {
             cardObjects.push(currCard);
@@ -22,9 +16,9 @@ function sortActiveCards() {
 
     if (!cardObjects) return;
 
-    const sortedCards = [...cardObjects].sort((a, b) => {
-        const currentCard = cards.hand.all.find(card => card.DOMObject === a.DOMObject);
-        const nextCard = cards.hand.all.find(card => card.DOMObject === b.DOMObject);
+    const sortedCards: Card[] = [...cardObjects].sort((a, b) => {
+        const currentCard: Card | undefined = cards.hand.all.find(card => card.DOMObject === a.DOMObject);
+        const nextCard: Card | undefined = cards.hand.all.find(card => card.DOMObject === b.DOMObject);
 
         if (!currentCard || !nextCard) return 0;
 
@@ -53,7 +47,7 @@ export function updateCardType() {
     var finalScoredHand: Card[][] = [];
     var longestHand = [0, 0]; // Length of same cards, Index
     var secondLongestHand = [0, 0];
-    const stoneModifierIndex = cardData.modifiers.all.enhancements.findIndex(modifier => modifier.name === "stone");
+    const stoneModifierIndex: number = cardData.modifiers.all.enhancements.findIndex(modifier => modifier.name === "stone");
     var stoneCards : Card[] = [];
 
     scoredHand.forEach(card => {
@@ -95,10 +89,10 @@ export function updateCardType() {
         }
     }
 
-    var longestHandIndex = longestHand[1];
-    var secondLongestHandIndex = secondLongestHand[1];
+    var longestHandIndex: number = longestHand[1];
+    var secondLongestHandIndex: number = secondLongestHand[1];
 
-    var fullHouseCards;
+    var fullHouseCards: Card[];
     var canBeFullHouse: boolean = false;
     var canBeTwoPair: boolean = false;
 
@@ -129,8 +123,8 @@ export function updateCardType() {
 
     cardData.currentHand.allCards = sortedHand;
 
-    const flush = isFlush();
-    const straight = isStraight();
+    const flush: boolean | undefined = isFlush();
+    const straight: boolean | undefined = isStraight();
 
     const handsInfo = [
         { name: "Flush Five", condition: longestHand[0] === 5 && flush },
@@ -182,8 +176,8 @@ export function updateCardType() {
 function isFlush() {
 
     const scoredHand: Card[] | undefined = sortActiveCards();
-    const flushModifierIndex = cardData.modifiers.all.enhancements.findIndex(modifier => modifier.name === "flush");
-    const stoneModifierIndex = cardData.modifiers.all.enhancements.findIndex(modifier => modifier.name === "stone");
+    const flushModifierIndex: number = cardData.modifiers.all.enhancements.findIndex(modifier => modifier.name === "flush");
+    const stoneModifierIndex: number = cardData.modifiers.all.enhancements.findIndex(modifier => modifier.name === "stone");
     
     if (!scoredHand) return;
 
@@ -230,7 +224,7 @@ function isStraight() {
     const scoredHand: Card[] | undefined = sortActiveCards();
     if (!scoredHand) return;
 
-    const stoneModifierIndex = cardData.modifiers.all.enhancements.findIndex(modifier => modifier.name === "stone");
+    const stoneModifierIndex: number = cardData.modifiers.all.enhancements.findIndex(modifier => modifier.name === "stone");
 
     const requiredCards: number = 5;
 
@@ -334,8 +328,8 @@ function scoreHand() {
 
 
 
-
-    const items = cardData.currentHand.items;
+    type itemsType = typeof cardData.currentHand.items;
+    const items: itemsType = cardData.currentHand.items;
 
 
     var score: number = Number((items.chips * items.mult).toFixed(0))
@@ -348,12 +342,12 @@ function scoreHand() {
     const mult: string = formatValue(items.mult);
     const finalScore: string = formatValue(score);
 
-    const chipsDOMObject : HTMLElement | null = document.getElementById("chipsAmount");
-    const multDOMObject : HTMLElement | null = document.getElementById("multAmount");
-    const finalScoreDOMObject : HTMLElement | null = document.getElementById("finalScore");
-    const tarotDOMObject : HTMLElement | null = document.getElementById("tarotAmount");
-    const planetDOMObject : HTMLElement | null = document.getElementById("planetAmount");
-    const moneyDOMObject : HTMLElement | null = document.getElementById("moneyAmount");
+    const chipsDOMObject: HTMLElement | null = document.getElementById("chipsAmount");
+    const multDOMObject: HTMLElement | null = document.getElementById("multAmount");
+    const finalScoreDOMObject: HTMLElement | null = document.getElementById("finalScore");
+    const tarotDOMObject: HTMLElement | null = document.getElementById("tarotAmount");
+    const planetDOMObject: HTMLElement | null = document.getElementById("planetAmount");
+    const moneyDOMObject: HTMLElement | null = document.getElementById("moneyAmount");
 
     const itemData = [
         ["Chips", chipsDOMObject, chips],
@@ -410,12 +404,12 @@ function scoreCard(card: Card, isRepeated: boolean) {
 
             var isCondition: number = -1;
 
-            const includesInPlay = cardDataModifier.condition.includes("inPlay");
-            const includesInHand = cardDataModifier.condition.includes("inHand");
+            const includesInPlay: boolean = cardDataModifier.condition.includes("inPlay");
+            const includesInHand: boolean = cardDataModifier.condition.includes("inHand");
 
             if (includesInPlay && includesInHand) {
-                var isConditionA = cardData.currentHand.allCards.findIndex(currentCard => currentCard === card);
-                var isConditionB = isCondition = cards.hand.inactive.findIndex(currentCard => currentCard.DOMObject === card.DOMObject);
+                var isConditionA: number = cardData.currentHand.allCards.findIndex(currentCard => currentCard === card);
+                var isConditionB: number = isCondition = cards.hand.inactive.findIndex(currentCard => currentCard.DOMObject === card.DOMObject);
 
                 if (isConditionA !== -1) isCondition = isConditionA;
                 if (isConditionB !== -1) isCondition = isConditionB;
@@ -433,12 +427,12 @@ function scoreCard(card: Card, isRepeated: boolean) {
             if (cardDataModifier.name === "lucky") {
                 const luckyModifier = cardData.modifiers.all.enhancements.find(modifier => modifier.name === "lucky");
                 if (!luckyModifier) return;
-                const value1 = luckyModifier.amount;
-                const value2 = luckyModifier.amount2;
-                const chance1 = luckyModifier.chance;
-                const chance2 = luckyModifier.chance2;
-                const type1 = luckyModifier.type;
-                const type2 = luckyModifier.type2;
+                const value1: number | undefined = luckyModifier.amount;
+                const value2: number | undefined = luckyModifier.amount2;
+                const chance1: number | undefined = luckyModifier.chance;
+                const chance2: number | undefined = luckyModifier.chance2;
+                const type1: string | undefined = luckyModifier.type;
+                const type2: string  | undefined = luckyModifier.type2;
 
                 if (!value1 || !value2 || !chance1 || !chance2 || !type1 || !type2) return;
 
@@ -474,13 +468,13 @@ export function restartValues() {
     cardData.currentHand.allCards = null;
     cardData.currentHand.handType = "High Card";
 
-    const valuesDOM = document.querySelectorAll(".values");
-    const handTypeDOM = document.getElementById("handType");
+    const valuesDOM: NodeListOf<HTMLElement> = document.querySelectorAll(".values");
+    const handTypeDOM: HTMLElement | null = document.getElementById("handType");
     if (!valuesDOM || !handTypeDOM) return;
 
-    const itemNames = ["Chips", "Mult", "Score", "Tarots", "Money", "Planets"]
+    const itemNames: string[] = ["Chips", "Mult", "Score", "Tarots", "Money", "Planets"]
 
-    let i = 0;
+    let i: number = 0;
 
     valuesDOM.forEach(element => {
         element.innerHTML = `${itemNames[i]}: <br> 0`;

@@ -81,17 +81,16 @@ function setUpCards() {
     contrast = "lowContrast";
   }
 
-  var url: number = 0;
   let i: number = 0;
 
-  const enhancementIndex = cardData.modifiers.chosenModifiersArr[0];
+  const enhancementIndex: number = cardData.modifiers.chosenModifiersArr[0];
   var backgroundUrl: string;
 
   if (enhancementIndex === -1) {
     backgroundUrl = 'url("../images/cards/background/cardBackground.png")';
   } else {
     backgroundUrl = `url("../images/modifiers/enhancements/${cardData.modifiers.all.enhancements[enhancementIndex].name}.png")`;
-    if(!backgroundUrl) return;
+    if (!backgroundUrl) return;
   }
 
   // Goes through every suit and numeral to add the cards
@@ -111,14 +110,14 @@ function setUpCards() {
 
       const div: HTMLElement = document.createElement("div");
 
-      const sealIndex = cardData.modifiers.chosenModifiersArr[1];
-      const editionIndex = cardData.modifiers.chosenModifiersArr[2];
-      const numeralUrl = `url(${urls.cardNumerals}/${contrast}/${suits[currentSuit]}/${numerals[currentNumeral]}.png)`;
+      const sealIndex: number = cardData.modifiers.chosenModifiersArr[1];
+      const editionIndex: number = cardData.modifiers.chosenModifiersArr[2];
+      const numeralUrl: string = `url(${urls.cardNumerals}/${contrast}/${suits[currentSuit]}/${numerals[currentNumeral]}.png)`;
 
       if (sealIndex !== -1) {
-        const seal = document.createElement("div");
-        const sealName = cardData.modifiers.all.seals[sealIndex].name;
-        const sealUrl = `url("../images/modifiers/seals/${sealName}.png")`;
+        const seal: HTMLElement = document.createElement("div");
+        const sealName: string = cardData.modifiers.all.seals[sealIndex].name;
+        const sealUrl: string = `url("../images/modifiers/seals/${sealName}.png")`;
 
         seal.classList.add("seals");
         seal.style.backgroundImage = `${sealUrl}`;
@@ -126,9 +125,9 @@ function setUpCards() {
       }
 
       if (editionIndex !== -1) {
-        const edition = document.createElement("div");
-        const editionName = cardData.modifiers.all.editions[editionIndex].name;
-        const editionUrl = `url("../images/modifiers/editions/${editionName}.png")`;
+        const edition: HTMLElement = document.createElement("div");
+        const editionName: string = cardData.modifiers.all.editions[editionIndex].name;
+        const editionUrl: string = `url("../images/modifiers/editions/${editionName}.png")`;
         edition.classList.add("editions");
         edition.style.backgroundImage = `${editionUrl}`;
         div.appendChild(edition);
@@ -154,7 +153,7 @@ function setUpModifiers() {
   const sealSelect: HTMLElement | null = document.getElementById("sealSelect");
   const editionSelect: HTMLElement | null = document.getElementById("editionSelect");
 
-  const cardBackground = urls.baseCardBackground;
+  const cardBackground: string = urls.baseCardBackground;
 
   const selectDOMObjects: (HTMLElement | null)[] = [enhancementSelect, sealSelect, editionSelect];
 
@@ -182,13 +181,13 @@ function setUpModifiers() {
 
       div.addEventListener("click", (e) => {
         //One can be chosen at once from each category of modifiers
-        const target = e.currentTarget as HTMLElement;
+        const target: HTMLElement = e.currentTarget as HTMLElement;
 
         type ModifierKey = keyof typeof cardData.lastSelectedModifiersDOM;
-        const modifierKeys = Object.keys(cardData.lastSelectedModifiersDOM) as ModifierKey[];
+        const modifierKeys: ModifierKey[] = Object.keys(cardData.lastSelectedModifiersDOM) as ModifierKey[];
 
-        const key = modifierKeys[i];
-        const lastChosenModifierDOM = cardData.lastSelectedModifiersDOM[key];
+        const key: ModifierKey = modifierKeys[i];
+        const lastChosenModifierDOM: HTMLElement | null = cardData.lastSelectedModifiersDOM[key];
 
         if (lastChosenModifierDOM !== target) {
           if (lastChosenModifierDOM) {
@@ -238,7 +237,7 @@ function addCard(suit: number, numeral: number) {
 
   if (enhancementIndex !== -1) {
     const enhancementName: string | undefined = cardData.modifiers.all.enhancements[enhancementIndex].name;
-    if(!enhancementName) return;
+    if (!enhancementName) return;
     backgroundImageUrl = `url("../images/modifiers/enhancements/${enhancementName}.png")`;
   } else {
     backgroundImageUrl = `url("../images/cards/background/cardBackground.png")`;
@@ -249,9 +248,9 @@ function addCard(suit: number, numeral: number) {
 
   if (sealIndex !== -1) {
     const seal: HTMLDivElement = document.createElement("div");
-    const sealName : string | undefined = cardData.modifiers.all.seals[sealIndex].name;
-    if(!sealName) return;
-    const sealUrl : string = `url("../images/modifiers/seals/${sealName}.png")`;
+    const sealName: string | undefined = cardData.modifiers.all.seals[sealIndex].name;
+    if (!sealName) return;
+    const sealUrl: string = `url("../images/modifiers/seals/${sealName}.png")`;
 
     seal.classList.add("seals");
     seal.style.backgroundImage = sealUrl;
@@ -259,10 +258,13 @@ function addCard(suit: number, numeral: number) {
   }
 
   if (editionIndex !== -1) {
-    const edition : HTMLDivElement = document.createElement("div");
-    const editionName : string | undefined = cardData.modifiers.all.editions[editionIndex].name;
-    if(!editionName) return;
-    const editionUrl : string = `url("../images/modifiers/editions/${editionName}.png")`;
+    const edition: HTMLDivElement = document.createElement("div");
+    const editionName: string | undefined = cardData.modifiers.all.editions[editionIndex].name;
+
+    if (!editionName) return;
+
+    const editionUrl: string = `url("../images/modifiers/editions/${editionName}.png")`;
+
     edition.classList.add("editions");
     edition.style.backgroundImage = `${editionUrl}`;
     div.appendChild(edition);
@@ -277,8 +279,6 @@ function addCard(suit: number, numeral: number) {
       selectCard(div);
     } else if (div.className.includes('pickedCards')) {
       deselectCard(div);
-    } else {
-      return;
     }
 
     return;
@@ -322,7 +322,7 @@ function selectCard(object: HTMLElement) {
   cards.hand.inactive = cards.hand.inactive.filter(card => card.DOMObject !== object);
 
   const newActiveCard: CardId = {
-    DOMObject: object
+    DOMObject: object as HTMLElement
   }
 
   cards.hand.active.push(newActiveCard);
@@ -338,7 +338,7 @@ function deselectCard(object: HTMLElement) {
   cards.hand.active = cards.hand.active.filter(card => card.DOMObject !== object);
 
   const newInactiveCard: CardId = {
-    DOMObject: object
+    DOMObject: object as HTMLElement
   };
 
   cards.hand.inactive.push(newInactiveCard);
@@ -347,20 +347,20 @@ function deselectCard(object: HTMLElement) {
 }
 
 function createCardObject(object: any, suitNumber: number, numeralNumber: number) {
-  const enhancement = cardData.modifiers.chosenModifiersArr[0];
-  const seal = cardData.modifiers.chosenModifiersArr[1];
-  const edition = cardData.modifiers.chosenModifiersArr[2];
+  const enhancement: number = cardData.modifiers.chosenModifiersArr[0];
+  const seal: number = cardData.modifiers.chosenModifiersArr[1];
+  const edition: number = cardData.modifiers.chosenModifiersArr[2];
 
   const newCard: Card = {
-    DOMObject: object,
-    order: cards.hand.inactive.length,
-    number: numeralNumber,
-    suit: suitNumber,
-    modifiers: [enhancement, seal, edition]
+    DOMObject: object as HTMLElement,
+    order: cards.hand.inactive.length as number,
+    number: numeralNumber as number,
+    suit: suitNumber as number,
+    modifiers: [enhancement, seal, edition] as number[]
   };
 
   const newInactiveCard: CardId = {
-    DOMObject: object
+    DOMObject: object as HTMLElement
   };
 
 
@@ -381,10 +381,8 @@ function removeCardObject(object: HTMLElement) {
 
   if (!currentObject) return 0;
 
-  var order: number;
-
-  const objectPath = cards.hand.all;
-  order = currentObject.order;
+  const objectPath: Card[] = cards.hand.all;
+  var order: number = currentObject.order;
 
   cards.hand.inactive = cards.hand.inactive.filter(card => card.DOMObject !== object);
   cards.hand.active = cards.hand.active.filter(card => card.DOMObject !== object);
@@ -421,13 +419,13 @@ export function sortAllCards() {
   if (!parent) return;
 
 
-    sortedCards.forEach(card => {
-      if (card.DOMObject) parent.appendChild(card.DOMObject);
-    });
+  sortedCards.forEach(card => {
+    if (card.DOMObject) parent.appendChild(card.DOMObject);
+  });
 
-    sortedCards.forEach((card, index) => {
-      card.order = index;
-    });
+  sortedCards.forEach((card, index) => {
+    card.order = index;
+  });
 
   return sortedCards;
 
