@@ -3,7 +3,6 @@ import { updateCardType, restartValues } from './handScoring.js';
 const numerals = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
 const suits = ['hearts', 'clubs', 'diamonds', 'spades'];
 var highContrast = true;
-const cardWidth = 69; //I love magic numbers <3
 if (typeof document !== "undefined") {
     var cardSelectionButtons = document.getElementsByClassName("cardSelectionButtons");
     var prevClickedButton = document.getElementById("cardsButton");
@@ -56,7 +55,6 @@ function setUpCards() {
     else {
         contrast = "lowContrast";
     }
-    var url = 0;
     let i = 0;
     const enhancementIndex = cardData.modifiers.chosenModifiersArr[0];
     var backgroundUrl;
@@ -215,9 +213,6 @@ function addCard(suit, numeral) {
         else if (div.className.includes('pickedCards')) {
             deselectCard(div);
         }
-        else {
-            return;
-        }
         return;
     });
     div.addEventListener('contextmenu', function (e) {
@@ -228,14 +223,7 @@ function addCard(suit, numeral) {
     activeCardsSection.appendChild(div);
     createCardObject(div, suit, numeral);
     sortAllCards();
-    if (div.clientWidth < cardWidth) {
-        var children = document.querySelectorAll("#currentCardsSection > *");
-        if (!children)
-            return "bozo";
-        children.forEach(child => {
-            child.classList.add("crampedCards");
-        });
-    }
+    setMarginOfCards();
     updateCardType();
     return "added card";
 }
@@ -282,9 +270,16 @@ function removeCardObject(object) {
     const currentObject = cards.hand.all.find(card => card.DOMObject === object);
     if (!currentObject)
         return 0;
-    var order;
+    /*
+      if (object.clientWidth > cardWidth) {
+        const children: NodeListOf<HTMLElement> = document.querySelectorAll("#currentCardsSection > *");
+        children.forEach(child => {
+          child.classList.remove("crampedCards");
+        });
+      }
+    */
     const objectPath = cards.hand.all;
-    order = currentObject.order;
+    var order = currentObject.order;
     cards.hand.inactive = cards.hand.inactive.filter(card => card.DOMObject !== object);
     cards.hand.active = cards.hand.active.filter(card => card.DOMObject !== object);
     for (let i = 0; i < cards.hand.inactive.length; i++) {
@@ -293,6 +288,7 @@ function removeCardObject(object) {
         }
     }
     cards.hand.all = objectPath.filter(card => card.DOMObject !== object);
+    setMarginOfCards();
     updateCardType();
     return 0;
 }
@@ -319,4 +315,18 @@ export function sortAllCards() {
         card.order = index;
     });
     return sortedCards;
+}
+function setMarginOfCards() {
+    const cardWidth = 95; // God damn magic numbers (this is perfect code don't question it);
+    const children = document.querySelectorAll("#currentCardsSection > *");
+    const parentObject = document.getElementById("currentCardsSection");
+    if (!children || !parentObject)
+        return "bozo";
+    var marginOfChildren = (parentObject.clientWidth - ((children.length + 1) * cardWidth)) / children.length;
+    console.log(marginOfChildren);
+    if (marginOfChildren >= 0)
+        marginOfChildren = 0;
+    children.forEach(child => {
+        child.style.marginLeft = `${marginOfChildren}px`;
+    });
 }

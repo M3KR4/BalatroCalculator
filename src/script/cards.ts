@@ -7,7 +7,6 @@ const suits: string[] = ['hearts', 'clubs', 'diamonds', 'spades'];
 
 
 var highContrast: boolean = true;
-const cardWidth: number = 69; //I love magic numbers <3
 
 if (typeof document !== "undefined") {
   var cardSelectionButtons: HTMLCollection = document.getElementsByClassName("cardSelectionButtons");
@@ -291,20 +290,10 @@ function addCard(suit: number, numeral: number) {
   });
 
   activeCardsSection.appendChild(div);
+
   createCardObject(div, suit, numeral);
   sortAllCards();
-
-  if (div.clientWidth < cardWidth) {
-    var children: NodeListOf<HTMLElement> = document.querySelectorAll("#currentCardsSection > *");
-    if (!children) return "bozo";
-
-    children.forEach(child => {
-      child.classList.add("crampedCards");
-    });
-
-
-  }
-
+  setMarginOfCards()
   updateCardType();
 
   return "added card";
@@ -380,7 +369,14 @@ function removeCardObject(object: HTMLElement) {
   const currentObject = cards.hand.all.find(card => card.DOMObject === object);
 
   if (!currentObject) return 0;
-
+/*
+  if (object.clientWidth > cardWidth) {
+    const children: NodeListOf<HTMLElement> = document.querySelectorAll("#currentCardsSection > *");
+    children.forEach(child => {
+      child.classList.remove("crampedCards");
+    });
+  }
+*/
   const objectPath: Card[] = cards.hand.all;
   var order: number = currentObject.order;
 
@@ -394,7 +390,10 @@ function removeCardObject(object: HTMLElement) {
   }
 
   cards.hand.all = objectPath.filter(card => card.DOMObject !== object);
+
+  setMarginOfCards();
   updateCardType();
+  
   return 0;
 }
 
@@ -431,3 +430,18 @@ export function sortAllCards() {
 
 }
 
+function setMarginOfCards(){
+ const cardWidth = 95; // God damn magic numbers (this is perfect code don't question it);
+  const children: NodeListOf<HTMLElement> = document.querySelectorAll("#currentCardsSection > *");
+  const parentObject: HTMLElement | null = document.getElementById("currentCardsSection");
+  if (!children || !parentObject) return "bozo";
+  
+  var marginOfChildren = (parentObject.clientWidth - ((children.length+1)*cardWidth))/children.length;
+  console.log(marginOfChildren);
+  if(marginOfChildren>=0) marginOfChildren = 0;
+
+  children.forEach(child => {
+    child.style.marginLeft = `${marginOfChildren}px`
+
+  });
+}

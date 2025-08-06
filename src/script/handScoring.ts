@@ -377,7 +377,9 @@ function scoreHand() {
 
 function scoreCard(card: Card, isRepeated: boolean) {
 
-    if (!card || !cardData.currentHand.allCards) return;
+    const isDebuffed = cardData.modifiers.all.editions[card.modifiers[2]].name==="debuffed";
+
+    if (!card || !cardData.currentHand.allCards || isDebuffed) return;
 
     if (cardData.currentHand.allCards.findIndex(currentCard => currentCard === card) !== -1) {
         cardData.currentHand.items.chips += cardData.cardValues[card.number];

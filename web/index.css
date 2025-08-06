@@ -1,14 +1,14 @@
-*{
+* {
     font-family: 'm6x11Plus';
 }
 
 @font-face {
     font-family: 'm6x11Plus';
     src: url(../fonts/m6x11plus.ttf);
-    
+
 }
 
-body{
+body {
     padding: 0;
     margin: 0;
     font-size: 4vh;
@@ -17,14 +17,14 @@ body{
     overflow: hidden;
 }
 
-#sideContent{
+#sideContent {
     width: 25vw;
     height: 100vh;
     float: left;
-    
+
 }
 
-#jokerContent{
+#jokerContent {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -34,20 +34,20 @@ body{
 }
 
 
-#mainContent{
+#mainContent {
     height: 80vh;
     width: 75vw;
     display: flex;
     justify-content: center;
-    
+
 }
 
-#mainContent #mainUI{
+#mainContent #mainUI {
     width: 90%;
     height: 100%;
 }
 
-#infoSection{
+#infoSection {
     width: 90%;
     height: 100%;
     background-color: rgb(38, 39, 43);
@@ -55,7 +55,7 @@ body{
     margin: auto;
 }
 
-#activeJokersHeader{
+#activeJokersHeader {
     width: 75%;
     height: 15vh;
     border-radius: 3vh;
@@ -63,7 +63,7 @@ body{
     float: left;
 }
 
-#cardsMain{
+#cardsMain {
     width: 100%;
     height: 80%;
     background-color: rgb(29, 29, 29);
@@ -75,7 +75,7 @@ body{
 
 
 
-#cardSelectionUI{
+#cardSelectionUI {
     width: 100%;
     height: 20%;
     background-color: rgb(26, 26, 26);
@@ -87,7 +87,7 @@ body{
 
 }
 
-.cardSelectionButtons{
+.cardSelectionButtons {
     height: 80%;
     flex: 1;
     margin: 0 1%;
@@ -96,39 +96,39 @@ body{
     font-size: 5vh;
     border-radius: 3vh;
     text-align: center;
-    
+
 }
 
-#editCardsSection{
+#editCardsSection {
     width: 100%;
-    height: 80%; 
+    height: 80%;
     display: flex;
 }
 
-#highContrastCards{
+#highContrastCards {
     display: block;
 }
 
-#lowContrastCards{
+#lowContrastCards {
     display: none;
 }
 
-.editCardsSections{
+.editCardsSections {
     display: none;
     float: left;
     width: 100%;
     height: 100%;
 }
 
-.selectedSection{
+.selectedSection {
     display: flex;
 }
 
-.borderedButton{
+.borderedButton {
     box-shadow: inset 0 0 0 0.2vh white;
 }
 
-#cardSelectionUI button:hover{
+#cardSelectionUI button:hover {
     background-color: rgb(243, 33, 1);
     box-shadow: inset 0 0 0 0.3vh rgb(255, 195, 195);
     cursor: pointer;
@@ -137,68 +137,68 @@ body{
 
 
 .cardsUI {
-  display: flex;       
-  position: relative;
-  overflow: visible;   
-  width: 100%;         
-  height: 12.5vh;         
-  padding-left: 0;  
-  justify-content: center;
-  align-items: center;    
+    display: flex;
+    position: relative;
+    overflow: visible;
+    width: 100%;
+    height: 12.5vh;
+    padding-left: 0;
+    justify-content: center;
+    align-items: center;
 }
 
 
-.cardsUI > * {
-  float: left;
-  width: 8.76vh;                     
-  height: 12vh;                     
-  margin-left: -2vh;   
-  box-shadow: 0 0 0 0.1vh rgb(63, 66, 92);    
-  border-radius: 0.4vh;    
-  
-  background-repeat: no-repeat;
-  background-size: 8.76vh 12vh;       
-  
-  position: relative;
-  z-index: 0;
+.cardsUI>* {
+    float: left;
+    width: 8.76vh;
+    height: 12vh;
+    margin-left: -2vh;
+    box-shadow: 0 0 0 0.1vh rgb(63, 66, 92);
+    border-radius: 0.4vh;
+
+    background-repeat: no-repeat;
+    background-size: 8.76vh 12vh;
+
+    position: relative;
+    z-index: 0;
 }
 
-.cardsUI > *:first-child {
-  margin-left: 0;
+.cardsUI>*:first-child {
+    margin-left: 0;
 }
 
 
-.cardsUI > *:last-child {
-  z-index: 10;
+.cardsUI>*:last-child {
+    z-index: 10;
 }
 
-.cardsUI > *:hover {
-  cursor: pointer;
-  z-index: 11;
-  background-size: 9.12vh 12.5vh;  
+.cardsUI>*:hover {
+    cursor: pointer;
+    z-index: 11;
+    background-size: 9.12vh 12.5vh;
 
-  transform: scale(1.05);   
+    transform: scale(1.05);
 }
 
-.cardsUI > *:hover + * {
-  margin-left: 0vh; 
+.cardsUI>*:hover+* {
+    margin-left: 0vh;
 }
 
-#allCardsSection{
+#allCardsSection {
     width: 80%;
     height: 100%;
     display: block;
 }
 
-#activeCardsSection{
+#activeCardsSection {
     width: 100%;
     height: 20%;
     background-color: rgb(37, 37, 37);
-    
+
     border-bottom-left-radius: 3vh;
     border-bottom-right-radius: 3vh;
     display: flex;
-    align-items:center;
+    align-items: center;
     justify-content: center;
 }
 
@@ -206,11 +206,11 @@ body{
 
 
 
-.pickedCards{
+.pickedCards {
     align-self: baseline;
 }
 
-#currentCardsSection{
+#currentCardsSection {
     display: flex;
     width: 80%;
     height: 100%;
@@ -219,33 +219,29 @@ body{
     float: left;
 }
 
-#currentCardsSection > *{
-  
-  width: 9.49vh;                     
-  height: 13vh;                     
-  margin-left: 0.75vh;   
-  box-shadow: inset 0 0 0 0.1vh rgb(63, 66, 92);   
-  border-radius: 0.4vh;       
-  
-  background-repeat: no-repeat, no-repeat;
-  background-size: 9.49vh 13vh, 9.49vh 13vh;       
-  
-  position: relative;
-  z-index: 0;
-  
+#currentCardsSection>* {
+    float: left;
+    width: 9.49vh;
+    height: 13vh;
+    box-shadow: inset 0 0 0 0.1vh rgb(63, 66, 92);
+    border-radius: 0.4vh;
+
+    background-repeat: no-repeat, no-repeat;
+    background-size: 100%, 100%, 100%, 100%;
+
+    position: relative;
+    z-index: 0;
+
 }
 
 
-#currentCardsSection > *:hover{
+#currentCardsSection>*:hover {
     cursor: pointer;
     transform: scale(1.02);
+    z-index: 20;
 }
 
-.crampedCards{
-    margin: -1vh;
-}
-
-#cardModifiersSection{
+#cardModifiersSection {
     width: 30%;
     height: 100%;
     display: flex;
@@ -283,53 +279,53 @@ body{
     margin: 0;
 
     display: grid;
-    grid-template-columns: 50% 50%; 
-    justify-items: center;       
-    align-items: center;         
+    grid-template-columns: 50% 50%;
+    justify-items: center;
+    align-items: center;
     box-shadow: 0 0 0 0.2vh black;
 }
 
 .modifierIcon {
-    width: 95%;                    
-    aspect-ratio: 138 / 186;       
+    width: 95%;
+    aspect-ratio: 138 / 186;
     background-size: 100% 100%, 100% 100%;
     background-repeat: no-repeat, no-repeat;
     box-shadow: inset 0 0 0 0.3vh rgb(0, 0, 0);
     border-radius: 1vh;
 }
 
-.modifierIcon:hover{
+.modifierIcon:hover {
     cursor: pointer;
     box-shadow: inset 0 0 0 0.3vh rgb(255, 195, 195);
 }
 
-.chosenModifier{
+.chosenModifier {
     box-shadow: inset 0 0 0 0.4vh rgb(0, 255, 0) !important;
 }
 
-.seals{
+.seals {
     width: 100%;
     height: 100%;
     border-radius: inherit;
     background-repeat: no-repeat;
-    background-size: contain;   
-    z-index: 2; 
+    background-size: contain;
+    z-index: 2;
     position: absolute;
 }
 
-.editions{
+.editions {
     width: 100%;
     height: 100%;
     border-radius: inherit;
     opacity: 0.4;
     background-repeat: no-repeat;
-    background-size: inherit;  
-    z-index: 1;  
+    background-size: inherit;
+    z-index: 1;
     position: absolute;
-    
+
 }
 
-#handType{
+#handType {
     text-align: center;
     color: white;
     font-size: 7vh;
@@ -337,14 +333,14 @@ body{
     width: 100%;
 }
 
-#scoreSection{
+#scoreSection {
     color: white;
     float: left;
     width: 100%;
 
 }
 
-#scoreSection > *{
+#scoreSection>* {
     width: 50%;
     float: left;
     color: white;
@@ -353,38 +349,38 @@ body{
     box-shadow: 0 0 0 0.2vh inset black;
 }
 
-#scoreSection > .smallAmountBox{
+#scoreSection>.smallAmountBox {
     width: calc(100%/3);
 }
 
-#scoreSection > #finalScore{
+#scoreSection>#finalScore {
     width: 100%;
     font-size: 6vh;
     box-shadow: none;
 }
 
-#chipsAmount{
+#chipsAmount {
     background-color: rgb(0, 144, 252);
 }
 
-#multAmount{
+#multAmount {
     background-color: rgb(250, 74, 63);
 }
 
-#finalScore{
+#finalScore {
     background-color: rgb(56, 56, 56);
 }
 
 
 
-#tarotAmount{
+#tarotAmount {
     background-color: rgb(147, 112, 199);
 }
 
-#planetAmount{
+#planetAmount {
     background-color: rgb(3, 147, 183);
 }
 
-#moneyAmount{
+#moneyAmount {
     background-color: rgb(242, 144, 2);
 }

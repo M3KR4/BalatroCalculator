@@ -19,6 +19,6 @@
   },
   "homepage": "https://github.com/M3KR4/BalatroCalculator#readme",
   "devDependencies": {
-    "typescript": "^5.8.3"
+    "typescript": "^5.9.2"
   }
 }
