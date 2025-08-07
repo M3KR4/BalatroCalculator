@@ -277,6 +277,10 @@ function addCard(suit: number, numeral: number) {
 
   div.style.backgroundImage = `${numeralUrl}, ${backgroundImageUrl}`;
 
+  div.addEventListener('mouseover', function () {
+    div.style.transform = "scale(1.02)";
+  });
+
   div.addEventListener('mousedown', function (e) {
 
     cardHeldHandler = function (e: MouseEvent) {
@@ -284,6 +288,7 @@ function addCard(suit: number, numeral: number) {
         cardIsHeld = false;
         document.removeEventListener('mousemove', cardHeldHandler);
         div.style.position = "static";
+        div.style.transform = "scale(1.00)";
         cardIsClicked = false;
         return;
       }
@@ -304,6 +309,13 @@ function addCard(suit: number, numeral: number) {
       document.removeEventListener('mousemove', cardHeldHandler);
       div.style.position = "static";
       div.style.zIndex = "0";
+      div.style.transform = "scale(1.00)";
+      const children: HTMLCollection = div.children;
+
+      for (let i = 0; i < children.length; i++) {
+        console.log(children[i].clientWidth);
+      }
+
       return;
     }
 
@@ -478,26 +490,27 @@ function moveCard(card: HTMLElement, event: MouseEvent) {
 
   card.style.position = "absolute";
   card.style.zIndex = "1000";
+
   card.style.right = `${-mousePosition.x + documentSize.width - cardSize.width / 2}px`;
   card.style.top = `${mousePosition.y - cardSize.height / 2}px`;
 
-  const nextSibling : HTMLElement | null = card.nextSibling as HTMLElement;
-  const previousSibling : HTMLElement | null = card.previousSibling as HTMLElement;
+  const nextSibling: HTMLElement | null = card.nextSibling as HTMLElement;
+  const previousSibling: HTMLElement | null = card.previousSibling as HTMLElement;
 
   const currCard = cards.hand.all.find(object => object.DOMObject === card);
   var nextCard;
 
-  if(nextSibling && nextSibling.getBoundingClientRect().x<card.getBoundingClientRect().x){
+  if (nextSibling && nextSibling.getBoundingClientRect().x < card.getBoundingClientRect().x) {
     nextSibling.after(card);
     nextCard = cards.hand.all.find(object => object.DOMObject === nextSibling)
   }
 
-  if(previousSibling && previousSibling.getBoundingClientRect().x>card.getBoundingClientRect().x){
+  if (previousSibling && previousSibling.getBoundingClientRect().x > card.getBoundingClientRect().x) {
     previousSibling.before(card);
     nextCard = cards.hand.all.find(object => object.DOMObject === previousSibling)
   }
 
-  if(nextCard && currCard){
+  if (nextCard && currCard) {
     const currCardOrder = currCard.order;
     const nextCardOrder = nextCard.order;
 
@@ -505,4 +518,5 @@ function moveCard(card: HTMLElement, event: MouseEvent) {
     nextCard.order = currCardOrder;
 
   }
+
 }

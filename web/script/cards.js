@@ -208,12 +208,16 @@ function addCard(suit, numeral) {
         div.appendChild(edition);
     }
     div.style.backgroundImage = `${numeralUrl}, ${backgroundImageUrl}`;
+    div.addEventListener('mouseover', function () {
+        div.style.transform = "scale(1.02)";
+    });
     div.addEventListener('mousedown', function (e) {
         cardHeldHandler = function (e) {
             if (cardIsClicked) {
                 cardIsHeld = false;
                 document.removeEventListener('mousemove', cardHeldHandler);
                 div.style.position = "static";
+                div.style.transform = "scale(1.00)";
                 cardIsClicked = false;
                 return;
             }
@@ -228,6 +232,11 @@ function addCard(suit, numeral) {
             document.removeEventListener('mousemove', cardHeldHandler);
             div.style.position = "static";
             div.style.zIndex = "0";
+            div.style.transform = "scale(1.00)";
+            const children = div.children;
+            for (let i = 0; i < children.length; i++) {
+                console.log(children[i].clientWidth);
+            }
             return;
         }
         cardIsClicked = true;
