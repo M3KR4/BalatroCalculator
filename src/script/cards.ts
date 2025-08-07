@@ -13,6 +13,12 @@ if (typeof document !== "undefined") {
   var prevClickedButton: HTMLElement | null = document.getElementById("cardsButton");
   var activeCardsSection: HTMLElement | null = document.getElementById("currentCardsSection");
 
+  var cardHeldHandler: (e: MouseEvent) => void;
+  var cardIsHeld: boolean;
+  var cardIsClicked: boolean;
+
+
+
 
   setUpButtonUI();
   setUpCards();
@@ -270,7 +276,38 @@ function addCard(suit: number, numeral: number) {
   }
 
   div.style.backgroundImage = `${numeralUrl}, ${backgroundImageUrl}`;
-  div.addEventListener('click', function (e) {
+
+  div.addEventListener('mousedown', function (e) {
+
+    cardHeldHandler = function (e: MouseEvent) {
+      if (cardIsClicked) {
+        cardIsHeld = false;
+        document.removeEventListener('mousemove', cardHeldHandler);
+        div.style.position = "static";
+        cardIsClicked = false;
+        return;
+      }
+      moveCard(div, e);
+      cardIsHeld = true;
+    };
+
+
+    document.addEventListener('mousemove', cardHeldHandler);
+
+  });
+
+
+
+  div.addEventListener('mouseup', function () {
+    if (cardIsHeld) {
+      cardIsHeld = false;
+      document.removeEventListener('mousemove', cardHeldHandler);
+      div.style.position = "static";
+      div.style.zIndex = "0";
+      return;
+    }
+
+    cardIsClicked = true;
 
     const limitExceeded = cards.hand.active.length >= 5;
 
@@ -302,11 +339,7 @@ function addCard(suit: number, numeral: number) {
 function selectCard(object: HTMLElement) {
   if (!object) return 0;
 
-
-
   object.classList.add('pickedCards');
-
-
 
   cards.hand.inactive = cards.hand.inactive.filter(card => card.DOMObject !== object);
 
@@ -369,14 +402,7 @@ function removeCardObject(object: HTMLElement) {
   const currentObject = cards.hand.all.find(card => card.DOMObject === object);
 
   if (!currentObject) return 0;
-/*
-  if (object.clientWidth > cardWidth) {
-    const children: NodeListOf<HTMLElement> = document.querySelectorAll("#currentCardsSection > *");
-    children.forEach(child => {
-      child.classList.remove("crampedCards");
-    });
-  }
-*/
+
   const objectPath: Card[] = cards.hand.all;
   var order: number = currentObject.order;
 
@@ -393,7 +419,7 @@ function removeCardObject(object: HTMLElement) {
 
   setMarginOfCards();
   updateCardType();
-  
+
   return 0;
 }
 
@@ -430,18 +456,53 @@ export function sortAllCards() {
 
 }
 
-function setMarginOfCards(){
- const cardWidth = 95; // God damn magic numbers (this is perfect code don't question it);
+function setMarginOfCards() {
+  const cardWidth = 95; // God damn magic numbers (this is perfect code don't question it);
   const children: NodeListOf<HTMLElement> = document.querySelectorAll("#currentCardsSection > *");
   const parentObject: HTMLElement | null = document.getElementById("currentCardsSection");
   if (!children || !parentObject) return "bozo";
-  
-  var marginOfChildren = (parentObject.clientWidth - ((children.length+1)*cardWidth))/children.length;
-  console.log(marginOfChildren);
-  if(marginOfChildren>=0) marginOfChildren = 0;
+
+  var marginOfChildren = (parentObject.clientWidth - ((children.length + 1) * cardWidth)) / children.length;
+  if (marginOfChildren >= 0) marginOfChildren = 0;
 
   children.forEach(child => {
     child.style.marginLeft = `${marginOfChildren}px`
 
   });
+}
+
+function moveCard(card: HTMLElement, event: MouseEvent) {
+  const mousePosition = { x: event.clientX, y: event.clientY }
+  const documentSize = { width: document.documentElement.clientWidth, height: document.documentElement.clientHeight };
+  const cardSize = { width: card.clientWidth, height: card.clientHeight };
+
+  card.style.position = "absolute";
+  card.style.zIndex = "1000";
+  card.style.right = `${-mousePosition.x + documentSize.width - cardSize.width / 2}px`;
+  card.style.top = `${mousePosition.y - cardSize.height / 2}px`;
+
+  const nextSibling : HTMLElement | null = card.nextSibling as HTMLElement;
+  const previousSibling : HTMLElement | null = card.previousSibling as HTMLElement;
+
+  const currCard = cards.hand.all.find(object => object.DOMObject === card);
+  var nextCard;
+
+  if(nextSibling && nextSibling.getBoundingClientRect().x<card.getBoundingClientRect().x){
+    nextSibling.after(card);
+    nextCard = cards.hand.all.find(object => object.DOMObject === nextSibling)
+  }
+
+  if(previousSibling && previousSibling.getBoundingClientRect().x>card.getBoundingClientRect().x){
+    previousSibling.before(card);
+    nextCard = cards.hand.all.find(object => object.DOMObject === previousSibling)
+  }
+
+  if(nextCard && currCard){
+    const currCardOrder = currCard.order;
+    const nextCardOrder = nextCard.order;
+
+    currCard.order = nextCardOrder;
+    nextCard.order = currCardOrder;
+
+  }
 }

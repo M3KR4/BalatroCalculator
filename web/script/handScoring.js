@@ -267,7 +267,7 @@ function scoreHand() {
     }
 }
 function scoreCard(card, isRepeated) {
-    const isDebuffed = cardData.modifiers.all.editions[card.modifiers[2]].name === "debuffed";
+    const isDebuffed = card.modifiers[2] !== -1 && cardData.modifiers.all.editions[card.modifiers[2]].name === "debuffed";
     if (!card || !cardData.currentHand.allCards || isDebuffed)
         return;
     if (cardData.currentHand.allCards.findIndex(currentCard => currentCard === card) !== -1) {

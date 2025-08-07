@@ -7,6 +7,9 @@ if (typeof document !== "undefined") {
     var cardSelectionButtons = document.getElementsByClassName("cardSelectionButtons");
     var prevClickedButton = document.getElementById("cardsButton");
     var activeCardsSection = document.getElementById("currentCardsSection");
+    var cardHeldHandler;
+    var cardIsHeld;
+    var cardIsClicked;
     setUpButtonUI();
     setUpCards();
     setUpModifiers();
@@ -205,7 +208,29 @@ function addCard(suit, numeral) {
         div.appendChild(edition);
     }
     div.style.backgroundImage = `${numeralUrl}, ${backgroundImageUrl}`;
-    div.addEventListener('click', function (e) {
+    div.addEventListener('mousedown', function (e) {
+        cardHeldHandler = function (e) {
+            if (cardIsClicked) {
+                cardIsHeld = false;
+                document.removeEventListener('mousemove', cardHeldHandler);
+                div.style.position = "static";
+                cardIsClicked = false;
+                return;
+            }
+            moveCard(div, e);
+            cardIsHeld = true;
+        };
+        document.addEventListener('mousemove', cardHeldHandler);
+    });
+    div.addEventListener('mouseup', function () {
+        if (cardIsHeld) {
+            cardIsHeld = false;
+            document.removeEventListener('mousemove', cardHeldHandler);
+            div.style.position = "static";
+            div.style.zIndex = "0";
+            return;
+        }
+        cardIsClicked = true;
         const limitExceeded = cards.hand.active.length >= 5;
         if (!div.className.includes('pickedCards') && !limitExceeded) {
             selectCard(div);
@@ -270,14 +295,6 @@ function removeCardObject(object) {
     const currentObject = cards.hand.all.find(card => card.DOMObject === object);
     if (!currentObject)
         return 0;
-    /*
-      if (object.clientWidth > cardWidth) {
-        const children: NodeListOf<HTMLElement> = document.querySelectorAll("#currentCardsSection > *");
-        children.forEach(child => {
-          child.classList.remove("crampedCards");
-        });
-      }
-    */
     const objectPath = cards.hand.all;
     var order = currentObject.order;
     cards.hand.inactive = cards.hand.inactive.filter(card => card.DOMObject !== object);
@@ -323,10 +340,36 @@ function setMarginOfCards() {
     if (!children || !parentObject)
         return "bozo";
     var marginOfChildren = (parentObject.clientWidth - ((children.length + 1) * cardWidth)) / children.length;
-    console.log(marginOfChildren);
     if (marginOfChildren >= 0)
         marginOfChildren = 0;
     children.forEach(child => {
         child.style.marginLeft = `${marginOfChildren}px`;
     });
+}
+function moveCard(card, event) {
+    const mousePosition = { x: event.clientX, y: event.clientY };
+    const documentSize = { width: document.documentElement.clientWidth, height: document.documentElement.clientHeight };
+    const cardSize = { width: card.clientWidth, height: card.clientHeight };
+    card.style.position = "absolute";
+    card.style.zIndex = "1000";
+    card.style.right = `${-mousePosition.x + documentSize.width - cardSize.width / 2}px`;
+    card.style.top = `${mousePosition.y - cardSize.height / 2}px`;
+    const nextSibling = card.nextSibling;
+    const previousSibling = card.previousSibling;
+    const currCard = cards.hand.all.find(object => object.DOMObject === card);
+    var nextCard;
+    if (nextSibling && nextSibling.getBoundingClientRect().x < card.getBoundingClientRect().x) {
+        nextSibling.after(card);
+        nextCard = cards.hand.all.find(object => object.DOMObject === nextSibling);
+    }
+    if (previousSibling && previousSibling.getBoundingClientRect().x > card.getBoundingClientRect().x) {
+        previousSibling.before(card);
+        nextCard = cards.hand.all.find(object => object.DOMObject === previousSibling);
+    }
+    if (nextCard && currCard) {
+        const currCardOrder = currCard.order;
+        const nextCardOrder = nextCard.order;
+        currCard.order = nextCardOrder;
+        nextCard.order = currCardOrder;
+    }
 }
