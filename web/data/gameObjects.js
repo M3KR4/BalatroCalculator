@@ -88,3 +88,9 @@ export const urls = {
     modifiers: '../images/modifiers',
     baseCardBackground: "../images/cards/background/cardBackground.png"
 };
+export const cardHeldEvent = {
+    cardIsClicked: false,
+    eventExists: false,
+    cardHeldHandler: null,
+    documentClicked: false
+};

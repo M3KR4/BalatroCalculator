@@ -1,4 +1,4 @@
-import { urls, cards, cardData, Card, CardId } from '../data/gameObjects.js';
+import { urls, cards, cardData, Card, CardId, cardHeldEvent } from '../data/gameObjects.js';
 import { updateCardType, restartValues } from './handScoring.js';
 
 const numerals: string[] = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
@@ -9,14 +9,17 @@ const suits: string[] = ['hearts', 'clubs', 'diamonds', 'spades'];
 var highContrast: boolean = true;
 
 if (typeof document !== "undefined") {
-  var cardSelectionButtons: HTMLCollection = document.getElementsByClassName("cardSelectionButtons");
+  var sectionListButtons: HTMLCollection = document.getElementsByClassName("sectionListButtons");
   var prevClickedButton: HTMLElement | null = document.getElementById("cardsButton");
   var activeCardsSection: HTMLElement | null = document.getElementById("currentCardsSection");
 
-  var cardHeldHandler: (e: MouseEvent) => void;
-  var cardIsHeld: boolean;
-  var cardIsClicked: boolean;
+  document.addEventListener("mousedown", function(e){
+    if(e.button === 0) cardHeldEvent.documentClicked = true;
+  })
 
+  document.addEventListener("mouseup", function(e){
+    if(e.button === 0) cardHeldEvent.documentClicked = false;
+  })
 
 
 
@@ -33,12 +36,12 @@ if (typeof document !== "undefined") {
 // Makes buttons do button stuff (adding a border to the last clicked button)
 
 function setUpButtonUI() {
-  for (let i = 0; i < cardSelectionButtons.length; i++) {
-    cardSelectionButtons[i]!.addEventListener("click", function (e) {
+  for (let i = 0; i < sectionListButtons.length; i++) {
+    sectionListButtons[i]!.addEventListener("click", function (e) {
 
-      const buttonId: string = cardSelectionButtons[i].id;
+      const buttonId: string = sectionListButtons[i].id;
       const button: HTMLElement | null = document.getElementById(buttonId);
-      const sections: HTMLCollection = document.getElementsByClassName("editCardsSections");
+      const sections: HTMLCollection = document.getElementsByClassName("editGameSections");
 
 
       if (!button) return;
@@ -74,9 +77,9 @@ function setUpButtonUI() {
 // Adds cards that you can click on to add them to your active cards
 function setUpCards() {
 
-  const cardsUI: NodeList = document.querySelectorAll(".cardsUI");
+  const addCardsSuitTypes: NodeList = document.querySelectorAll(".addCardsSuitTypes");
 
-  if (!cardsUI) return;
+  if (!addCardsSuitTypes) return;
 
   var contrast: string;
 
@@ -100,7 +103,7 @@ function setUpCards() {
 
   // Goes through every suit and numeral to add the cards
 
-  cardsUI.forEach(element => {
+  addCardsSuitTypes.forEach(element => {
     const currentSuit: number = i;
 
     while (element.firstChild) {
@@ -282,34 +285,40 @@ function addCard(suit: number, numeral: number) {
   });
 
   div.addEventListener('mousedown', function (e) {
+    cardHeldEvent.cardHeldHandler = function (e: MouseEvent) {
+      if ((cardHeldEvent.cardIsClicked || !cardHeldEvent.documentClicked) && cardHeldEvent.cardHeldHandler !== null) {
 
-    cardHeldHandler = function (e: MouseEvent) {
-      if (cardIsClicked) {
-        cardIsHeld = false;
-        document.removeEventListener('mousemove', cardHeldHandler);
+        document.removeEventListener('mousemove', cardHeldEvent.cardHeldHandler);
+
         div.style.position = "static";
         div.style.transform = "scale(1.00)";
-        cardIsClicked = false;
+        cardHeldEvent.cardIsClicked = false;
+        cardHeldEvent.eventExists = false;
+        cardHeldEvent.cardHeldHandler = null;
         return;
       }
       moveCard(div, e);
-      cardIsHeld = true;
+      cardHeldEvent.eventExists = true;
     };
 
-
-    document.addEventListener('mousemove', cardHeldHandler);
-
+    if(cardHeldEvent.eventExists) return;
+    document.addEventListener('mousemove', cardHeldEvent.cardHeldHandler);
+    
   });
 
 
 
-  div.addEventListener('mouseup', function () {
-    if (cardIsHeld) {
-      cardIsHeld = false;
-      document.removeEventListener('mousemove', cardHeldHandler);
+  div.addEventListener('mouseup', function (e) {
+
+    if (cardHeldEvent.eventExists && cardHeldEvent.cardHeldHandler !== null) {
+
+      document.removeEventListener('mousemove', cardHeldEvent.cardHeldHandler);
+
       div.style.position = "static";
       div.style.zIndex = "0";
       div.style.transform = "scale(1.00)";
+
+      cardHeldEvent.eventExists = false;
       const children: HTMLCollection = div.children;
 
       for (let i = 0; i < children.length; i++) {
@@ -319,7 +328,7 @@ function addCard(suit: number, numeral: number) {
       return;
     }
 
-    cardIsClicked = true;
+    cardHeldEvent.cardIsClicked = true;
 
     const limitExceeded = cards.hand.active.length >= 5;
 
@@ -469,13 +478,14 @@ export function sortAllCards() {
 }
 
 function setMarginOfCards() {
-  const cardWidth = 95; // God damn magic numbers (this is perfect code don't question it);
+  const cardWidth = 76; // God damn magic numbers (this is perfect code don't question it);
   const children: NodeListOf<HTMLElement> = document.querySelectorAll("#currentCardsSection > *");
   const parentObject: HTMLElement | null = document.getElementById("currentCardsSection");
   if (!children || !parentObject) return "bozo";
 
   var marginOfChildren = (parentObject.clientWidth - ((children.length + 1) * cardWidth)) / children.length;
   if (marginOfChildren >= 0) marginOfChildren = 0;
+
 
   children.forEach(child => {
     child.style.marginLeft = `${marginOfChildren}px`

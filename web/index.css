@@ -17,12 +17,82 @@ body {
     overflow: hidden;
 }
 
+/*SIDE CONTENT*/
+
 #sideContent {
     width: 25vw;
     height: 100vh;
     float: left;
 
 }
+
+#handType {
+    text-align: center;
+    color: white;
+    font-size: 7vh;
+    float: left;
+    width: 100%;
+}
+
+#scoreSection {
+    color: white;
+    float: left;
+    width: 100%;
+
+}
+
+#scoreSection>* {
+    width: 50%;
+    float: left;
+    color: white;
+    text-align: center;
+    font-size: 3.6vh;
+    box-shadow: 0 0 0 0.2vh inset black;
+}
+
+#infoSection {
+    width: 90%;
+    height: 100%;
+    background-color: rgb(38, 39, 43);
+    display: block;
+    margin: auto;
+}
+
+#scoreSection>.smallAmountBox {
+    width: calc(100%/3);
+}
+
+#scoreSection>#finalScore {
+    width: 100%;
+    font-size: 6vh;
+    box-shadow: none;
+}
+
+#chipsAmount {
+    background-color: rgb(0, 144, 252);
+}
+
+#multAmount {
+    background-color: rgb(250, 74, 63);
+}
+
+#finalScore {
+    background-color: rgb(56, 56, 56);
+}
+
+#tarotAmount {
+    background-color: rgb(147, 112, 199);
+}
+
+#planetAmount {
+    background-color: rgb(3, 147, 183);
+}
+
+#moneyAmount {
+    background-color: rgb(242, 144, 2);
+}
+
+/*JOKER SECTION*/
 
 #jokerContent {
     display: flex;
@@ -32,6 +102,8 @@ body {
     height: 20vh;
     float: left;
 }
+
+/*MAIN CONTENT*/
 
 
 #mainContent {
@@ -43,16 +115,8 @@ body {
 }
 
 #mainContent #mainUI {
-    width: 90%;
+    width: 95%;
     height: 100%;
-}
-
-#infoSection {
-    width: 90%;
-    height: 100%;
-    background-color: rgb(38, 39, 43);
-    display: block;
-    margin: auto;
 }
 
 #activeJokersHeader {
@@ -61,6 +125,18 @@ body {
     border-radius: 3vh;
     background-color: rgba(37, 37, 37, 0.8);
     float: left;
+}
+
+#ButtonUI {
+    width: 100%;
+    height: 20%;
+    background-color: rgb(26, 26, 26);
+    border-top-right-radius: 3vh;
+    border-top-left-radius: 3vh;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
 }
 
 #cardsMain {
@@ -74,21 +150,9 @@ body {
 
 
 
-
-#cardSelectionUI {
-    width: 100%;
-    height: 20%;
-    background-color: rgb(26, 26, 26);
-    border-top-right-radius: 3vh;
-    border-top-left-radius: 3vh;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-}
-
-.cardSelectionButtons {
+.sectionListButtons {
     height: 80%;
+    width: 15%;
     flex: 1;
     margin: 0 1%;
     background-color: rgb(218, 29, 0);
@@ -99,21 +163,13 @@ body {
 
 }
 
-#editCardsSection {
+#sectionListUI {
     width: 100%;
     height: 80%;
     display: flex;
 }
 
-#highContrastCards {
-    display: block;
-}
-
-#lowContrastCards {
-    display: none;
-}
-
-.editCardsSections {
+.editGameSections {
     display: none;
     float: left;
     width: 100%;
@@ -128,7 +184,7 @@ body {
     box-shadow: inset 0 0 0 0.2vh white;
 }
 
-#cardSelectionUI button:hover {
+#ButtonUI button:hover {
     background-color: rgb(243, 33, 1);
     box-shadow: inset 0 0 0 0.3vh rgb(255, 195, 195);
     cursor: pointer;
@@ -136,7 +192,7 @@ body {
 
 
 
-.cardsUI {
+.addCardsSuitTypes {
     display: flex;
     position: relative;
     overflow: visible;
@@ -147,12 +203,17 @@ body {
     align-items: center;
 }
 
+#addCardsSection {
+    width: 70%;
+    height: 100%;
+    display: block;
+}
 
-.cardsUI>* {
+.addCardsSuitTypes>* {
     float: left;
     width: 8.76vh;
     height: 12vh;
-    margin-left: -2vh;
+    margin-left: -3vh;
     box-shadow: 0 0 0 0.1vh rgb(63, 66, 92);
     border-radius: 0.4vh;
 
@@ -163,16 +224,16 @@ body {
     z-index: 0;
 }
 
-.cardsUI>*:first-child {
+.addCardsSuitTypes>*:first-child {
     margin-left: 0;
 }
 
 
-.cardsUI>*:last-child {
+.addCardsSuitTypes>*:last-child {
     z-index: 10;
 }
 
-.cardsUI>*:hover {
+.addCardsSuitTypes>*:hover {
     cursor: pointer;
     z-index: 11;
     background-size: 9.12vh 12.5vh;
@@ -180,15 +241,11 @@ body {
     transform: scale(1.05);
 }
 
-.cardsUI>*:hover+* {
+.addCardsSuitTypes>*:hover+* {
     margin-left: 0vh;
 }
 
-#allCardsSection {
-    width: 80%;
-    height: 100%;
-    display: block;
-}
+
 
 #activeCardsSection {
     width: 100%;
@@ -201,10 +258,6 @@ body {
     align-items: center;
     justify-content: center;
 }
-
-
-
-
 
 .pickedCards {
     align-self: baseline;
@@ -238,8 +291,7 @@ body {
 
 #currentCardsSection>*:hover {
     cursor: pointer;
-    transform: scale(1.02);
-    z-index: 9 !important;
+    z-index: 50 !important;
 }
 
 #cardModifiersSection {
@@ -323,64 +375,4 @@ body {
     background-size: inherit;
     z-index: 1;
     position: absolute;
-}
-
-#handType {
-    text-align: center;
-    color: white;
-    font-size: 7vh;
-    float: left;
-    width: 100%;
-}
-
-#scoreSection {
-    color: white;
-    float: left;
-    width: 100%;
-
-}
-
-#scoreSection>* {
-    width: 50%;
-    float: left;
-    color: white;
-    text-align: center;
-    font-size: 3.6vh;
-    box-shadow: 0 0 0 0.2vh inset black;
-}
-
-#scoreSection>.smallAmountBox {
-    width: calc(100%/3);
-}
-
-#scoreSection>#finalScore {
-    width: 100%;
-    font-size: 6vh;
-    box-shadow: none;
-}
-
-#chipsAmount {
-    background-color: rgb(0, 144, 252);
-}
-
-#multAmount {
-    background-color: rgb(250, 74, 63);
-}
-
-#finalScore {
-    background-color: rgb(56, 56, 56);
-}
-
-
-
-#tarotAmount {
-    background-color: rgb(147, 112, 199);
-}
-
-#planetAmount {
-    background-color: rgb(3, 147, 183);
-}
-
-#moneyAmount {
-    background-color: rgb(242, 144, 2);
 }

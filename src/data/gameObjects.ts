@@ -7,6 +7,8 @@ export type Card = {
   modifiers: number[] // Enhancement, Seal, Edition
 }
 
+type CardHeldHandler = (e: MouseEvent) => void;
+
 export type CardId = {
   DOMObject: HTMLElement
 }
@@ -129,3 +131,9 @@ export const urls = {
   baseCardBackground: "../images/cards/background/cardBackground.png" as string
 };
 
+export const cardHeldEvent = {
+  cardIsClicked: false as boolean,
+  eventExists: false as boolean,
+  cardHeldHandler: null as CardHeldHandler | null,
+  documentClicked: false as boolean
+}

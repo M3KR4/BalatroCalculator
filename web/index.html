@@ -40,24 +40,24 @@
 
         <section id="mainUI">
 
-
             <main id="cardsMain">
 
-                <section id="cardSelectionUI">
-                    <button id="cardsButton" class="cardSelectionButtons borderedButton">Cards</button>
-                    <button id="jokersButton" class="cardSelectionButtons">Jokers</button>
-                    <button id="bossButton" class="cardSelectionButtons">Boss</button>
-                    <button id="otherButton" class="cardSelectionButtons">Other</button>
-                    <button id="settingsButton" class="cardSelectionButtons">Settings</button>
+                <section id="ButtonUI">
+                    <button id="cardsButton" class="sectionListButtons borderedButton">Cards</button>
+                    <button id="jokersButton" class="sectionListButtons">Jokers</button>
+                    <button id="bossButton" class="sectionListButtons">Boss</button>
+                    <button id="otherButton" class="sectionListButtons">Other</button>
+                    <button id="settingsButton" class="sectionListButtons">Settings</button>
                 </section>
 
-                <section id="editCardsSection">
-                    <section id="addCardsSection" class="editCardsSections selectedSection">
-                        <section id="allCardsSection">
-                            <section id="heartsL" class="cardsUI" data-suit="hearts" data-contrast="low"></section>
-                            <section id="clubsL" class="cardsUI" data-suit="hearts" data-contrast="low"></section>
-                            <section id="diamondsL" class="cardsUI" data-suit="hearts" data-contrast="low"></section>
-                            <section id="spadesL" class="cardsUI" data-suit="hearts" data-contrast="low"></section>
+                <section id="sectionListUI">
+                    <section id="cardsSection" class="editGameSections selectedSection">
+
+                        <section id="addCardsSection">
+                            <section id="heartsL" class="addCardsSuitTypes"></section>
+                            <section id="clubsL" class="addCardsSuitTypes"></section>
+                            <section id="diamondsL" class="addCardsSuitTypes"></section>
+                            <section id="spadesL" class="addCardsSuitTypes"></section>
                         </section>
 
                         <section id="cardModifiersSection">
@@ -80,10 +80,10 @@
 
 
 
-                    <section id="addJokersSection" class="editCardsSections"></section>
-                    <section id="changeBossSection" class="editCardsSections"></section>
-                    <section id="otherSection" class="editCardsSections"></section>
-                    <section id="changeSettingsSection" class="editCardsSections"></section>
+                    <section id="addJokersSection" class="editGameSections"></section>
+                    <section id="changeBossSection" class="editGameSections"></section>
+                    <section id="otherSection" class="editGameSections"></section>
+                    <section id="changeSettingsSection" class="editGameSections"></section>
                 </section>
             </main>
 
