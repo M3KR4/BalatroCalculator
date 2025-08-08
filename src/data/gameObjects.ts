@@ -132,8 +132,17 @@ export const urls = {
 };
 
 export const cardHeldEvent = {
+  cardIsHeld: false as boolean,
   cardIsClicked: false as boolean,
+  isMoved: false as boolean,
   eventExists: false as boolean,
+  cardHeldTime: 100,
+  mouseHeldTimer: null as null | ReturnType<typeof setTimeout>,
   cardHeldHandler: null as CardHeldHandler | null,
-  documentClicked: false as boolean
+}
+
+export const documentData = {
+  mouseIsMoving: false,
+  mouseStopTime: 100,
+  mousePosition: {x: 0, y: 0}
 }

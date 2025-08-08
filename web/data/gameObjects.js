@@ -89,8 +89,16 @@ export const urls = {
     baseCardBackground: "../images/cards/background/cardBackground.png"
 };
 export const cardHeldEvent = {
+    cardIsHeld: false,
     cardIsClicked: false,
+    isMoved: false,
     eventExists: false,
+    cardHeldTime: 100,
+    mouseHeldTimer: null,
     cardHeldHandler: null,
-    documentClicked: false
+};
+export const documentData = {
+    mouseIsMoving: false,
+    mouseStopTime: 100,
+    mousePosition: { x: 0, y: 0 }
 };

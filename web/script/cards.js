@@ -1,4 +1,4 @@
-import { urls, cards, cardData, cardHeldEvent } from '../data/gameObjects.js';
+import { urls, cards, cardData, cardHeldEvent, documentData } from '../data/gameObjects.js';
 import { updateCardType, restartValues } from './handScoring.js';
 const numerals = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
 const suits = ['hearts', 'clubs', 'diamonds', 'spades'];
@@ -7,13 +7,15 @@ if (typeof document !== "undefined") {
     var sectionListButtons = document.getElementsByClassName("sectionListButtons");
     var prevClickedButton = document.getElementById("cardsButton");
     var activeCardsSection = document.getElementById("currentCardsSection");
-    document.addEventListener("mousedown", function (e) {
-        if (e.button === 0)
-            cardHeldEvent.documentClicked = true;
-    });
-    document.addEventListener("mouseup", function (e) {
-        if (e.button === 0)
-            cardHeldEvent.documentClicked = false;
+    let mouseTimer;
+    document.addEventListener('mousemove', function (e) {
+        documentData.mouseIsMoving = true;
+        documentData.mousePosition.x = e.pageX;
+        documentData.mousePosition.y = e.pageY;
+        clearTimeout(mouseTimer);
+        mouseTimer = setTimeout(() => {
+            documentData.mouseIsMoving = false;
+        }, documentData.mouseStopTime);
     });
     setUpButtonUI();
     setUpCards();
@@ -176,7 +178,7 @@ function addCard(suit, numeral) {
     else {
         contrast = "lowContrast";
     }
-    const div = document.createElement("div");
+    var div = document.createElement("div");
     var backgroundImageUrl;
     var numeralUrl;
     const enhancementIndex = cardData.modifiers.chosenModifiersArr[0];
@@ -213,55 +215,7 @@ function addCard(suit, numeral) {
         div.appendChild(edition);
     }
     div.style.backgroundImage = `${numeralUrl}, ${backgroundImageUrl}`;
-    div.addEventListener('mouseover', function () {
-        div.style.transform = "scale(1.02)";
-    });
-    div.addEventListener('mousedown', function (e) {
-        cardHeldEvent.cardHeldHandler = function (e) {
-            if ((cardHeldEvent.cardIsClicked || !cardHeldEvent.documentClicked) && cardHeldEvent.cardHeldHandler !== null) {
-                document.removeEventListener('mousemove', cardHeldEvent.cardHeldHandler);
-                div.style.position = "static";
-                div.style.transform = "scale(1.00)";
-                cardHeldEvent.cardIsClicked = false;
-                cardHeldEvent.eventExists = false;
-                cardHeldEvent.cardHeldHandler = null;
-                return;
-            }
-            moveCard(div, e);
-            cardHeldEvent.eventExists = true;
-        };
-        if (cardHeldEvent.eventExists)
-            return;
-        document.addEventListener('mousemove', cardHeldEvent.cardHeldHandler);
-    });
-    div.addEventListener('mouseup', function (e) {
-        if (cardHeldEvent.eventExists && cardHeldEvent.cardHeldHandler !== null) {
-            document.removeEventListener('mousemove', cardHeldEvent.cardHeldHandler);
-            div.style.position = "static";
-            div.style.zIndex = "0";
-            div.style.transform = "scale(1.00)";
-            cardHeldEvent.eventExists = false;
-            const children = div.children;
-            for (let i = 0; i < children.length; i++) {
-                console.log(children[i].clientWidth);
-            }
-            return;
-        }
-        cardHeldEvent.cardIsClicked = true;
-        const limitExceeded = cards.hand.active.length >= 5;
-        if (!div.className.includes('pickedCards') && !limitExceeded) {
-            selectCard(div);
-        }
-        else if (div.className.includes('pickedCards')) {
-            deselectCard(div);
-        }
-        return;
-    });
-    div.addEventListener('contextmenu', function (e) {
-        e.preventDefault();
-        div.remove();
-        removeCardObject(div);
-    });
+    div = addEventsToCard(div);
     activeCardsSection.appendChild(div);
     createCardObject(div, suit, numeral);
     sortAllCards();
@@ -389,4 +343,60 @@ function moveCard(card, event) {
         currCard.order = nextCardOrder;
         nextCard.order = currCardOrder;
     }
+}
+function addEventsToCard(card) {
+    card = addCardHeldEvent(card);
+    card = addCardRemovalEvent(card);
+    card = addCardSelectionEvent(card);
+    return card;
+}
+function addCardHeldEvent(div) {
+    div.addEventListener('mousedown', function () {
+        if (cardHeldEvent.mouseHeldTimer !== null)
+            clearTimeout(cardHeldEvent.mouseHeldTimer);
+        cardHeldEvent.cardIsHeld = false;
+        cardHeldEvent.mouseHeldTimer = setTimeout(() => {
+            cardHeldEvent.cardIsHeld = true;
+        }, cardHeldEvent.cardHeldTime);
+        cardHeldEvent.cardHeldHandler = (e) => {
+            if (!cardHeldEvent.cardIsHeld)
+                return;
+            moveCard(div, e);
+        };
+        document.addEventListener('mousemove', cardHeldEvent.cardHeldHandler);
+        document.addEventListener("mouseup", function (e) {
+            if (cardHeldEvent.cardHeldHandler)
+                document.removeEventListener('mousemove', cardHeldEvent.cardHeldHandler);
+            div.style.position = "static";
+            div.style.zIndex = "0";
+            div.style.transform = "scale(1.00)";
+        });
+    });
+    return div;
+}
+function addCardRemovalEvent(div) {
+    div.addEventListener('contextmenu', function (e) {
+        e.preventDefault();
+        div.remove();
+        removeCardObject(div);
+    });
+    return div;
+}
+function addCardSelectionEvent(div) {
+    div.addEventListener('mouseup', function (e) {
+        if (cardHeldEvent.cardIsHeld) {
+            cardHeldEvent.cardIsHeld = false;
+            return;
+        }
+        cardHeldEvent.cardIsClicked = true;
+        const limitExceeded = cards.hand.active.length >= 5;
+        if (!div.className.includes('pickedCards') && !limitExceeded) {
+            selectCard(div);
+        }
+        else if (div.className.includes('pickedCards')) {
+            deselectCard(div);
+        }
+        return;
+    });
+    return div;
 }
