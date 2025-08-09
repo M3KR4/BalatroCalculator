@@ -176,7 +176,7 @@ export function updateCardType() {
 function isFlush() {
 
     const scoredHand: Card[] | undefined = sortActiveCards();
-    const flushModifierIndex: number = cardData.modifiers.all.enhancements.findIndex(modifier => modifier.name === "flush");
+    const wildModifierIndex: number = cardData.modifiers.all.enhancements.findIndex(modifier => modifier.name === "wild");
     const stoneModifierIndex: number = cardData.modifiers.all.enhancements.findIndex(modifier => modifier.name === "stone");
     
     if (!scoredHand) return;
@@ -191,7 +191,7 @@ function isFlush() {
 
         if (suits.length !== 0) {
             for (let i = 0; i < suits.length; i++) {
-                if ((suits[i][0].suit === card.suit || card.modifiers[0] === flushModifierIndex)) {
+                if ((suits[i][0].suit === card.suit || card.modifiers[0] === wildModifierIndex)) {
                     suits[i].push(card);
                     isNew = false;
                 }
@@ -273,25 +273,27 @@ function isStraight() {
 
 
 function sortByOrder(cards: Card[] | null) {
-
     if (!cards) return cards;
 
-    var newCardsArray: Card[] = [];
-
-    var lowestOrderIndex: number;
-    var lowestOrder: number;
+    const newCardsArray: Card[] = [];
+    const usedIndices = new Set<number>();
 
     for (let i = 0; i < cards.length; i++) {
-        lowestOrder = -1;
-        lowestOrderIndex = -1;
+        let lowestOrderIndex = -1;
+        let lowestOrder = Infinity;
+
 
         for (let j = 0; j < cards.length; j++) {
-            if ((cards[i].order < lowestOrder || lowestOrderIndex === -1) && !newCardsArray.includes(cards[i])) {
-                lowestOrder = cards[i].order;
-                lowestOrderIndex = i;
+            if (!usedIndices.has(j) && cards[j].order < lowestOrder) {
+                lowestOrder = cards[j].order;
+                lowestOrderIndex = j;
             }
         }
-        newCardsArray.push(cards[lowestOrderIndex]);
+
+        if (lowestOrderIndex !== -1) {
+            newCardsArray.push(cards[lowestOrderIndex]);
+            usedIndices.add(lowestOrderIndex);
+        }
     }
 
     return newCardsArray;

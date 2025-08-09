@@ -342,6 +342,7 @@ function moveCard(card, event) {
         const nextCardOrder = nextCard.order;
         currCard.order = nextCardOrder;
         nextCard.order = currCardOrder;
+        updateCardType();
     }
 }
 function addEventsToCard(card) {
@@ -384,6 +385,8 @@ function addCardRemovalEvent(div) {
 }
 function addCardSelectionEvent(div) {
     div.addEventListener('mouseup', function (e) {
+        if (e.button !== 0)
+            return;
         if (cardHeldEvent.cardIsHeld) {
             cardHeldEvent.cardIsHeld = false;
             return;
