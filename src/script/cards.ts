@@ -450,13 +450,14 @@ function moveCard(card: HTMLElement, event: MouseEvent) {
 
   if (nextSibling && nextSibling.getBoundingClientRect().x < card.getBoundingClientRect().x) {
     nextSibling.after(card);
-    nextCard = cards.hand.all.find(object => object.DOMObject === nextSibling)
+    nextCard = cards.hand.all.find(object => object.DOMObject === nextSibling);
   }
 
   if (previousSibling && previousSibling.getBoundingClientRect().x > card.getBoundingClientRect().x) {
     previousSibling.before(card);
-    nextCard = cards.hand.all.find(object => object.DOMObject === previousSibling)
+    nextCard = cards.hand.all.find(object => object.DOMObject === previousSibling);
   }
+
 
   if (nextCard && currCard) {
     const currCardOrder = currCard.order;
@@ -465,7 +466,12 @@ function moveCard(card: HTMLElement, event: MouseEvent) {
     currCard.order = nextCardOrder;
     nextCard.order = currCardOrder;
 
+     updateCardType();
+
   }
+
+ 
+
 
 }
 
@@ -522,6 +528,7 @@ function addCardRemovalEvent(div: HTMLDivElement) {
 
 function addCardSelectionEvent(div: HTMLDivElement) {
   div.addEventListener('mouseup', function (e) {
+    if(e.button !== 0) return;
 
     if (cardHeldEvent.cardIsHeld) {
       cardHeldEvent.cardIsHeld = false;
