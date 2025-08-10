@@ -283,6 +283,7 @@ function scoreCard(card, isRepeated) {
             const isLucky = (cardDataModifier.name === "lucky");
             if (!cardDataModifier)
                 return;
+            console.log(card);
             var isCondition = -1;
             const includesInPlay = cardDataModifier.condition.includes("inPlay");
             const includesInHand = cardDataModifier.condition.includes("inHand");
@@ -303,8 +304,8 @@ function scoreCard(card, isRepeated) {
                 isCondition = cards.hand.inactive.findIndex(currentCard => currentCard.DOMObject === card.DOMObject);
             }
             if (isCondition === -1)
-                break;
-            if (cardDataModifier.name === "lucky") {
+                continue;
+            if (isLucky) {
                 const luckyModifier = cardData.modifiers.all.enhancements.find(modifier => modifier.name === "lucky");
                 if (!luckyModifier)
                     return;
