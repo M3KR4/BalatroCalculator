@@ -402,10 +402,6 @@ function scoreCard(card: Card, isRepeated: boolean) {
 
             if (!cardDataModifier) return;
 
-
-            console.log(card);
-
-
             var isCondition: number = -1;
 
             const includesInPlay: boolean = cardDataModifier.condition.includes("inPlay");
