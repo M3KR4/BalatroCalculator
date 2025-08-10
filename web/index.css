@@ -92,6 +92,32 @@ body {
     background-color: rgb(242, 144, 2);
 }
 
+#addMultipleCardsSection {
+    float: left;
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    color: white;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    margin-top: 3vh;
+}
+
+#cardCount{
+    color: black;
+    font-size: 3vh;
+    width:auto;
+    text-align: center !important;
+    text-decoration: none;
+}
+
+#cardCountText{
+    margin: 0;
+    font-size: 5vh;
+}
+
 /*JOKER SECTION*/
 
 #jokerContent {

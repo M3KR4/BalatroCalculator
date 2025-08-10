@@ -108,7 +108,24 @@ function setUpCards() {
             }
             div.style.backgroundImage = `${numeralUrl}, ${backgroundUrl}`;
             div.addEventListener('click', function () {
-                addCard(currentSuit, currentNumeral);
+                const cardCountInput = document.getElementById("cardCount");
+                if (!cardCountInput) {
+                    console.error("Cannot find 'cardCount' DOM object");
+                    return;
+                }
+                const cardCountNum = Number(cardCountInput.value);
+                if (Number.isNaN(cardCountNum) || cardCountNum <= 0) {
+                    console.error(`Card count should be a positive number`);
+                    return;
+                }
+                for (let i = 0; i < cardCountNum; i++) {
+                    if (i !== cardCountNum - 1) {
+                        addCard(currentSuit, currentNumeral, false);
+                    }
+                    else {
+                        addCard(currentSuit, currentNumeral, true);
+                    }
+                }
             });
             div.addEventListener('contextmenu', (e) => { e.preventDefault(); });
             element.appendChild(div);
@@ -166,7 +183,7 @@ function setUpModifiers() {
     }
 }
 // Creates a card in the active card area
-function addCard(suit, numeral) {
+function addCard(suit, numeral, countCards) {
     if (!activeCardsSection)
         return 0;
     if (!document)
@@ -218,6 +235,8 @@ function addCard(suit, numeral) {
     div = addEventsToCard(div);
     activeCardsSection.appendChild(div);
     createCardObject(div, suit, numeral);
+    if (!countCards)
+        return;
     sortAllCards();
     setMarginOfCards();
     updateCardType();

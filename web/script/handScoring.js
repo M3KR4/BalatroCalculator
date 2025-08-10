@@ -283,7 +283,6 @@ function scoreCard(card, isRepeated) {
             const isLucky = (cardDataModifier.name === "lucky");
             if (!cardDataModifier)
                 return;
-            console.log(card);
             var isCondition = -1;
             const includesInPlay = cardDataModifier.condition.includes("inPlay");
             const includesInHand = cardDataModifier.condition.includes("inHand");
