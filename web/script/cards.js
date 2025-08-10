@@ -324,7 +324,7 @@ export function sortAllCards() {
     return sortedCards;
 }
 function setMarginOfCards() {
-    const cardWidth = 76; // God damn magic numbers (this is perfect code don't question it);
+    const cardWidth = document.body.clientHeight * (cardData.cardWidthInVh / 100); // God damn magic numbers (this is perfect code don't question it);
     const children = document.querySelectorAll("#currentCardsSection > *");
     const parentObject = document.getElementById("currentCardsSection");
     if (!children || !parentObject)

@@ -33,6 +33,7 @@ export const cardData = {
     sortNumber: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
     sortSuit: [1, 2, 3, 0],
     scientificNotationThreshold: Math.pow(10, 11),
+    cardWidthInVh: 9.49,
     modifiers: {
         enhancements: ["bonus", "mult", "wild", "glass", "steel", "stone", "gold", "lucky"],
         seals: ["gold", "red", "blue", "purple"],
