@@ -13,19 +13,23 @@
 
     <side id="sideContent">
         <section id="infoSection">
-            <section id="handTypeSection">
-                <div id="handType">None</div>
-                <section id="scoreSection">
-                    <div id="chipsAmount" class="values"></div>
-                    <div id="multAmount" class="values"></div>
-                    <div id="finalScore" class="values"></div>
-                    <div id="tarotAmount" class="smallAmountBox values"></div>
-                    <div id="moneyAmount" class="smallAmountBox values"></div>
-                    <div id="planetAmount" class="smallAmountBox values"></div>
-                </section>
-
+            <div id="handType">None</div>
+            <section id="scoreSection">
+                <div id="chipsAmount" class="values"></div>
+                <div id="multAmount" class="values"></div>
+                <div id="finalScore" class="values"></div>
+                <div id="tarotAmount" class="smallAmountBox values"></div>
+                <div id="moneyAmount" class="smallAmountBox values"></div>
+                <div id="planetAmount" class="smallAmountBox values"></div>
             </section>
+
+            <div id="addMultipleCardsSection">
+                <div id="cardCountText">Card Amount</div>
+                <input type="text" inputmode="numeric" id="cardCount" pattern="[0-9]*" value="1">
+            </div>
         </section>
+
+
 
     </side>
 

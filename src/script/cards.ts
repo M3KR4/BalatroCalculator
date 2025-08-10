@@ -146,7 +146,30 @@ function setUpCards() {
 
       div.style.backgroundImage = `${numeralUrl}, ${backgroundUrl}`;
       div.addEventListener('click', function () {
-        addCard(currentSuit, currentNumeral);
+
+        const cardCountInput: HTMLInputElement | null = document.getElementById("cardCount") as HTMLInputElement;
+        if (!cardCountInput) {
+          console.error("Cannot find 'cardCount' DOM object");
+          return;
+        }
+
+        const cardCountNum: number = Number(cardCountInput.value);
+
+        if (Number.isNaN(cardCountNum) || cardCountNum<=0) {
+
+          console.error(`Card count should be a positive number`);
+          return;
+        }
+
+        for (let i = 0; i < cardCountNum; i++) {
+          if (i !== cardCountNum-1) {
+            addCard(currentSuit, currentNumeral, false);
+
+          } else {
+            addCard(currentSuit, currentNumeral, true);
+          }
+        }
+
       });
 
       div.addEventListener('contextmenu', (e) => { e.preventDefault() });
@@ -224,7 +247,7 @@ function setUpModifiers() {
 
 // Creates a card in the active card area
 
-function addCard(suit: number, numeral: number) {
+function addCard(suit: number, numeral: number, countCards: boolean) {
 
 
   if (!activeCardsSection) return 0;
@@ -288,6 +311,7 @@ function addCard(suit: number, numeral: number) {
   activeCardsSection.appendChild(div);
 
   createCardObject(div, suit, numeral);
+  if (!countCards) return;
   sortAllCards();
   setMarginOfCards()
   updateCardType();
@@ -466,11 +490,11 @@ function moveCard(card: HTMLElement, event: MouseEvent) {
     currCard.order = nextCardOrder;
     nextCard.order = currCardOrder;
 
-     updateCardType();
+    updateCardType();
 
   }
 
- 
+
 
 
 }
@@ -488,7 +512,7 @@ function addEventsToCard(card: HTMLDivElement) {
 function addCardHeldEvent(div: HTMLDivElement) {
 
   div.addEventListener('mousedown', function () {
-    if(cardHeldEvent.mouseHeldTimer !== null) clearTimeout(cardHeldEvent.mouseHeldTimer);
+    if (cardHeldEvent.mouseHeldTimer !== null) clearTimeout(cardHeldEvent.mouseHeldTimer);
     cardHeldEvent.cardIsHeld = false;
 
     cardHeldEvent.mouseHeldTimer = setTimeout(() => {
@@ -496,7 +520,7 @@ function addCardHeldEvent(div: HTMLDivElement) {
     }, cardHeldEvent.cardHeldTime);
 
     cardHeldEvent.cardHeldHandler = (e: MouseEvent) => {
-      if(!cardHeldEvent.cardIsHeld) return;
+      if (!cardHeldEvent.cardIsHeld) return;
 
       moveCard(div, e);
     };
@@ -505,7 +529,7 @@ function addCardHeldEvent(div: HTMLDivElement) {
 
 
     document.addEventListener("mouseup", function (e) {
-      if(cardHeldEvent.cardHeldHandler) document.removeEventListener('mousemove', cardHeldEvent.cardHeldHandler);
+      if (cardHeldEvent.cardHeldHandler) document.removeEventListener('mousemove', cardHeldEvent.cardHeldHandler);
       div.style.position = "static";
       div.style.zIndex = "0";
       div.style.transform = "scale(1.00)"
@@ -528,7 +552,7 @@ function addCardRemovalEvent(div: HTMLDivElement) {
 
 function addCardSelectionEvent(div: HTMLDivElement) {
   div.addEventListener('mouseup', function (e) {
-    if(e.button !== 0) return;
+    if (e.button !== 0) return;
 
     if (cardHeldEvent.cardIsHeld) {
       cardHeldEvent.cardIsHeld = false;
