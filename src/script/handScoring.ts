@@ -403,7 +403,7 @@ function scoreCard(card: Card, isRepeated: boolean) {
             if (!cardDataModifier) return;
 
 
-
+            console.log(card);
 
 
             var isCondition: number = -1;
@@ -425,10 +425,10 @@ function scoreCard(card: Card, isRepeated: boolean) {
                 isCondition = cards.hand.inactive.findIndex(currentCard => currentCard.DOMObject === card.DOMObject);
             }
 
-            if (isCondition === -1) break;
+            if (isCondition === -1) continue;
             
 
-            if (cardDataModifier.name === "lucky") {
+            if (isLucky) {
                 const luckyModifier = cardData.modifiers.all.enhancements.find(modifier => modifier.name === "lucky");
                 if (!luckyModifier) return;
                 const value1: number | undefined = luckyModifier.amount;
