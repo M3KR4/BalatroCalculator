@@ -155,14 +155,14 @@ function setUpCards() {
 
         const cardCountNum: number = Number(cardCountInput.value);
 
-        if (Number.isNaN(cardCountNum) || cardCountNum<=0) {
+        if (Number.isNaN(cardCountNum) || cardCountNum <= 0) {
 
           console.error(`Card count should be a positive number`);
           return;
         }
 
         for (let i = 0; i < cardCountNum; i++) {
-          if (i !== cardCountNum-1) {
+          if (i !== cardCountNum - 1) {
             addCard(currentSuit, currentNumeral, false);
 
           } else {
@@ -440,7 +440,7 @@ export function sortAllCards() {
 }
 
 function setMarginOfCards() {
-  const cardWidth = 76; // God damn magic numbers (this is perfect code don't question it);
+  const cardWidth = document.body.clientHeight * (cardData.cardWidthInVh / 100); // God damn magic numbers (this is perfect code don't question it);
   const children: NodeListOf<HTMLElement> = document.querySelectorAll("#currentCardsSection > *");
   const parentObject: HTMLElement | null = document.getElementById("currentCardsSection");
   if (!children || !parentObject) return "bozo";

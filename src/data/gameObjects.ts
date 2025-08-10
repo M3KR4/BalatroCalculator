@@ -54,6 +54,7 @@ export const cardData = {
   sortNumber: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14] as number[],
   sortSuit: [1, 2, 3, 0] as number[],
   scientificNotationThreshold: Math.pow(10, 11) as number,
+  cardWidthInVh: 9.49,
 
 
   modifiers: {
