@@ -440,17 +440,18 @@ export function sortAllCards() {
 }
 
 function setMarginOfCards() {
-  const cardWidth = document.body.clientHeight * (cardData.cardWidthInVh / 100); // God damn magic numbers (this is perfect code don't question it);
+  const cardWidth = document.body.clientHeight * (cardData.cardWidthInVh / 100);
+  
   const children: NodeListOf<HTMLElement> = document.querySelectorAll("#currentCardsSection > *");
   const parentObject: HTMLElement | null = document.getElementById("currentCardsSection");
   if (!children || !parentObject) return "bozo";
 
-  var marginOfChildren = (parentObject.clientWidth - ((children.length + 1) * cardWidth)) / children.length;
-  if (marginOfChildren >= 0) marginOfChildren = 0;
+  const marginOfChildren = (parentObject.clientWidth - ((children.length + 1) * cardWidth)) / children.length;
+  const finalMargin = marginOfChildren <= -0.1 ? marginOfChildren : -0.1;
 
 
   children.forEach(child => {
-    child.style.marginLeft = `${marginOfChildren}px`
+    child.style.marginLeft = `${finalMargin}px`
 
   });
 }
