@@ -7,6 +7,13 @@ export type Card = {
   modifiers: number[] // Enhancement, Seal, Edition
 }
 
+export type Joker = {
+  DOMObject: HTMLElement,
+  name: string,
+  order: number,
+  edition: number
+}
+
 type CardHeldHandler = (e: MouseEvent) => void;
 
 export type CardId = {
@@ -17,35 +24,7 @@ export function radnom(min: number, max: number) {
   return Number((Math.random() * (max + min)).toFixed());
 }
 
-export const jokers = {
-  active: {
-    amounts: {
-      all: 0 as number,
-      common: 0 as number,
-      uncommon: 0 as number,
-      rare: 0 as number
-    },
 
-    types: {
-      mult: [],
-      chip: [],
-      xMult: [],
-      other: []
-    },
-
-  },
-
-  all: {
-    types: {
-      mult: [],
-      chip: [],
-      xMult: [],
-      other: []
-    },
-
-    names: [] as string[]
-  }
-};
 
 export const cardData = {
   numerals: ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'] as string[],
@@ -107,10 +86,6 @@ export const cardData = {
   },
 
 };
-
-
-
-
 
 export const cards: {
   hand: {
