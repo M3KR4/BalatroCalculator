@@ -1,5 +1,6 @@
 import { urls, cards, cardData, Card, CardId, cardHeldEvent, documentData } from '../data/gameObjects.js';
 import { updateCardType, restartValues } from './handScoring.js';
+import { jokers } from '../data/jokerData.js';
 
 const numerals: string[] = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
 const suits: string[] = ['hearts', 'clubs', 'diamonds', 'spades'];
@@ -434,7 +435,6 @@ export function sortAllCards() {
   sortedCards.forEach((card, index) => {
     card.order = index;
   });
-
   return sortedCards;
 
 }

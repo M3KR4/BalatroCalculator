@@ -1,31 +1,6 @@
 export function radnom(min, max) {
     return Number((Math.random() * (max + min)).toFixed());
 }
-export const jokers = {
-    active: {
-        amounts: {
-            all: 0,
-            common: 0,
-            uncommon: 0,
-            rare: 0
-        },
-        types: {
-            mult: [],
-            chip: [],
-            xMult: [],
-            other: []
-        },
-    },
-    all: {
-        types: {
-            mult: [],
-            chip: [],
-            xMult: [],
-            other: []
-        },
-        names: []
-    }
-};
 export const cardData = {
     numerals: ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'],
     cardValues: [2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11],
