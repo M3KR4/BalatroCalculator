@@ -48,10 +48,10 @@ export function updateCardType() {
     var longestHand = [0, 0]; // Length of same cards, Index
     var secondLongestHand = [0, 0];
     const stoneModifierIndex: number = cardData.modifiers.all.enhancements.findIndex(modifier => modifier.name === "stone");
-    var stoneCards : Card[] = [];
+    var stoneCards: Card[] = [];
 
     scoredHand.forEach(card => {
-        if(card.modifiers[0] === stoneModifierIndex){
+        if (card.modifiers[0] === stoneModifierIndex) {
             stoneCards.push(card);
             return;
         }
@@ -123,8 +123,10 @@ export function updateCardType() {
 
     cardData.currentHand.allCards = sortedHand;
 
-    const flush: boolean | undefined = isFlush();
-    const straight: boolean | undefined = isStraight();
+    const evaluator = new HandEvaluator();
+
+    const flush: boolean | undefined = evaluator.isFlush();
+    const straight: boolean | undefined = evaluator.isStraight();
 
     const handsInfo = [
         { name: "Flush Five", condition: longestHand[0] === 5 && flush },
@@ -153,13 +155,13 @@ export function updateCardType() {
         cardData.currentHand.allCards = sortedHand;
     }
 
-    if(cardData.currentHand.allCards && stoneCards.length!==0){
+    if (cardData.currentHand.allCards && stoneCards.length !== 0) {
         cardData.currentHand.allCards = cardData.currentHand.allCards.concat(stoneCards);
-    }else if(stoneCards.length!==0){
+    } else if (stoneCards.length !== 0) {
         cardData.currentHand.allCards = stoneCards;
     }
 
-    
+
 
     const handTypeText: HTMLElement | null = document.getElementById("handType");
 
@@ -173,104 +175,111 @@ export function updateCardType() {
 
 }
 
-function isFlush() {
+class HandEvaluator {
+    private requiredCards = 5;
+    private scoredHand = sortActiveCards();
+    private enhancements = cardData.modifiers.all.enhancements;
 
-    const scoredHand: Card[] | undefined = sortActiveCards();
-    const wildModifierIndex: number = cardData.modifiers.all.enhancements.findIndex(modifier => modifier.name === "wild");
-    const stoneModifierIndex: number = cardData.modifiers.all.enhancements.findIndex(modifier => modifier.name === "stone");
-    
-    if (!scoredHand) return;
+    private getWildIndex() {
+        return this.enhancements.findIndex(modifier => modifier.name === "wild") as number;
+    }
 
-    const requiredCards: number = 5;
+    private getStoneIndex() {
+        return this.enhancements.findIndex(modifier => modifier.name === "stone") as number;
+    }
 
-    var suits: Card[][] = [];
+    private getDebuffedIndex() {
+        return cardData.modifiers.all.editions.findIndex(modifier => modifier.name === "debuffed") as number;
+    }
 
-    scoredHand.forEach(card => {
-        if(card.modifiers[0] === stoneModifierIndex) return;
-        var isNew: boolean = true;
+    isFlush() {
+        if (!this.scoredHand) return false;
 
-        if (suits.length !== 0) {
-            for (let i = 0; i < suits.length; i++) {
-                if ((suits[i][0].suit === card.suit || card.modifiers[0] === wildModifierIndex)) {
-                    suits[i].push(card);
-                    isNew = false;
+        var suits: Card[][] = [];
+
+        this.scoredHand.forEach(card => {
+            if (card.modifiers[0] === this.getStoneIndex()) return;
+
+            var isNew: boolean = true;
+
+            if (suits.length !== 0) {
+                for (let i = 0; i < suits.length; i++) {
+                    const checkedCard = suits[i][0];
+                    if (
+                        (checkedCard.suit === card.suit ||
+                            (checkedCard.modifiers[0] === this.getWildIndex() && checkedCard.modifiers[2] !== this.getDebuffedIndex()) ||
+                            (card.modifiers[0] === this.getWildIndex() && card.modifiers[2] !== this.getDebuffedIndex()))
+                    ) {
+                        suits[i].push(card);
+                        isNew = false;
+                    }
                 }
+            }
+
+            if (isNew) {
+                suits.push([card]);
+            }
+
+        });
+
+        for (let i = 0; i < suits.length; i++) {
+            if (suits[i].length >= this.requiredCards) {
+                const sortedHand: Card[] | null = sortByOrder(suits[i]);
+                cardData.currentHand.allCards = sortedHand;
+
+                return true;
             }
         }
 
-        if (isNew) {
-            suits.push([card]);
+        return false;
+    }
+
+    isStraight() {
+        if (!this.scoredHand) return false;
+
+        var finalHand: Card[] = []
+
+        if (this.scoredHand.length < 4) return false;
+
+
+        for (let i = this.scoredHand.length - 1; i >= 0; i--) {
+            if (finalHand.length >= 5 || this.scoredHand[i].modifiers[0] === this.getStoneIndex()) {
+                break;
+            }
+            
+            if ((this.scoredHand[i].number === 0 && this.scoredHand[0].number === 12) && this.scoredHand[0].modifiers[0] !== this.getStoneIndex()) {
+
+                finalHand.push(this.scoredHand[i], this.scoredHand[0]);
+                continue;
+            }
+
+            if (finalHand.length === 0) {
+                finalHand.push(this.scoredHand[i]);
+                continue;
+            }
+
+            if (this.scoredHand[i + 1].number + 1 === this.scoredHand[i].number) {
+                finalHand.push(this.scoredHand[i]);
+                continue;
+            }
+
+            finalHand = [];
         }
-    });
 
+        if (finalHand.length === this.requiredCards) {
 
-
-    for (let i = 0; i < suits.length; i++) {
-        if (suits[i].length >= requiredCards) {
-            const sortedHand: Card[] | null = sortByOrder(suits[i]);
+            const sortedHand: Card[] | null = sortByOrder(finalHand);
             cardData.currentHand.allCards = sortedHand;
-
             return true;
+
         }
+
+
+
+
+        return false;
     }
-
-
-
-    return false;
 }
-
-
-function isStraight() {
-    const scoredHand: Card[] | undefined = sortActiveCards();
-    if (!scoredHand) return;
-
-    const stoneModifierIndex: number = cardData.modifiers.all.enhancements.findIndex(modifier => modifier.name === "stone");
-
-    const requiredCards: number = 5;
-
-    var finalHand: Card[] = []
-
-    if (scoredHand.length < 4) return false;
-
-
-    for (let i = scoredHand.length - 1; i >= 0; i--) {
-        if (finalHand.length >= 5 || scoredHand[i].modifiers[0] === stoneModifierIndex) {
-            break;
-        }
-
-        if ((scoredHand[i].number === 0 && scoredHand[0].number === 14) && scoredHand[0].modifiers[0] !== stoneModifierIndex) {
-
-            finalHand.push(scoredHand[i], scoredHand[0]);
-            continue;
-        }
-
-        if (finalHand.length === 0) {
-            finalHand.push(scoredHand[i]);
-            continue;
-        }
-
-        if (scoredHand[i + 1].number + 1 === scoredHand[i].number) {
-            finalHand.push(scoredHand[i]);
-            continue;
-        }
-
-        finalHand = [];
-    }
-
-    if (finalHand.length === requiredCards) {
-
-        const sortedHand: Card[] | null = sortByOrder(finalHand);
-        cardData.currentHand.allCards = sortedHand;
-        return true;
-
-    }
-
-
-
-
-    return false;
-}
-
 
 function sortByOrder(cards: Card[] | null) {
     if (!cards) return cards;
@@ -360,17 +369,17 @@ function scoreHand() {
         ["Money", moneyDOMObject, items.money]
     ]
 
-    for(let i = 0; i<itemData.length; i++){
+    for (let i = 0; i < itemData.length; i++) {
         var name = itemData[i][0];
         var DOMObject = itemData[i][1];
         var amount = itemData[i][2];
 
 
-        if(!amount || !name || !DOMObject || typeof DOMObject !== "object") continue;
+        if (!amount || !name || !DOMObject || typeof DOMObject !== "object") continue;
 
 
         amount = amount.toString();
-        
+
         DOMObject.innerHTML = `${name}: <br>${amount}`
 
     }
@@ -379,7 +388,7 @@ function scoreHand() {
 
 function scoreCard(card: Card, isRepeated: boolean) {
 
-    const isDebuffed = card.modifiers[2]!==-1 && cardData.modifiers.all.editions[card.modifiers[2]].name==="debuffed";
+    const isDebuffed = card.modifiers[2] !== -1 && cardData.modifiers.all.editions[card.modifiers[2]].name === "debuffed";
 
     if (!card || !cardData.currentHand.allCards || isDebuffed) return;
 
@@ -422,7 +431,7 @@ function scoreCard(card: Card, isRepeated: boolean) {
             }
 
             if (isCondition === -1) continue;
-            
+
 
             if (isLucky) {
                 const luckyModifier = cardData.modifiers.all.enhancements.find(modifier => modifier.name === "lucky");
@@ -432,7 +441,7 @@ function scoreCard(card: Card, isRepeated: boolean) {
                 const chance1: number | undefined = luckyModifier.chance;
                 const chance2: number | undefined = luckyModifier.chance2;
                 const type1: string | undefined = luckyModifier.type;
-                const type2: string  | undefined = luckyModifier.type2;
+                const type2: string | undefined = luckyModifier.type2;
 
                 if (!value1 || !value2 || !chance1 || !chance2 || !type1 || !type2) return;
 
@@ -440,14 +449,14 @@ function scoreCard(card: Card, isRepeated: boolean) {
                 items[type2 as ItemKey] += randomEvent(value2, chance2, type2).avg;
 
             } else if (cardDataModifier.type !== "xMult" && cardDataModifier.type) {
-                if(!cardDataModifier.amount) return;
+                if (!cardDataModifier.amount) return;
                 items[cardDataModifier.type as ItemKey] += cardDataModifier.amount;
-            } else if (cardDataModifier.type === "xMult"){
-                if(!cardDataModifier.amount) return;
+            } else if (cardDataModifier.type === "xMult") {
+                if (!cardDataModifier.amount) return;
                 items["mult" as ItemKey] *= cardDataModifier.amount;
             }
 
-            
+
             if (cardDataModifier.name === "red" && !isRepeated) {
                 scoreCard(card, true);
             }
