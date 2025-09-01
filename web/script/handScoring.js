@@ -1,133 +1,4 @@
 import { cards, cardData } from '../data/gameObjects.js';
-function sortActiveCards() {
-    var activeCards = cards.hand.active;
-    var cardObjects = [];
-    activeCards.forEach(card => {
-        const currCard = cards.hand.all.find(cardObject => cardObject.DOMObject === card.DOMObject);
-        if (currCard) {
-            cardObjects.push(currCard);
-        }
-    });
-    if (!cardObjects)
-        return;
-    const sortedCards = [...cardObjects].sort((a, b) => {
-        const currentCard = cards.hand.all.find(card => card.DOMObject === a.DOMObject);
-        const nextCard = cards.hand.all.find(card => card.DOMObject === b.DOMObject);
-        if (!currentCard || !nextCard)
-            return 0;
-        const valA = cardData.sortNumber[currentCard.number];
-        const valB = cardData.sortNumber[nextCard.number];
-        if (valA !== valB)
-            return valB - valA;
-        const suitA = cardData.sortSuit[currentCard.suit];
-        const suitB = cardData.sortSuit[nextCard.suit];
-        return suitA - suitB;
-    });
-    return sortedCards;
-}
-export function updateCardType() {
-    restartValues();
-    const scoredHand = sortActiveCards();
-    if (!scoredHand)
-        return;
-    var finalScoredHand = [];
-    var longestHand = [0, 0]; // Length of same cards, Index
-    var secondLongestHand = [0, 0];
-    const stoneModifierIndex = cardData.modifiers.all.enhancements.findIndex(modifier => modifier.name === "stone");
-    var stoneCards = [];
-    scoredHand.forEach(card => {
-        if (card.modifiers[0] === stoneModifierIndex) {
-            stoneCards.push(card);
-            return;
-        }
-        var isNew = true;
-        if (finalScoredHand.length != 0) {
-            for (let i = 0; i < finalScoredHand.length; i++) {
-                if (finalScoredHand[i][0].number == card.number) {
-                    finalScoredHand[i].push(card);
-                    isNew = false;
-                }
-            }
-        }
-        if (isNew) {
-            finalScoredHand.push([card]);
-        }
-    });
-    for (let i = 0; i < finalScoredHand.length; i++) {
-        if (finalScoredHand[i].length > secondLongestHand[0] && finalScoredHand[i].length <= longestHand[0]) {
-            secondLongestHand[0] = finalScoredHand[i].length;
-            secondLongestHand[1] = i;
-        }
-        else if (finalScoredHand[i].length > longestHand[0]) {
-            if (longestHand[0] > secondLongestHand[0]) {
-                secondLongestHand[0] = longestHand[0];
-            }
-            longestHand[0] = finalScoredHand[i].length;
-            longestHand[1] = i;
-        }
-    }
-    var longestHandIndex = longestHand[1];
-    var secondLongestHandIndex = secondLongestHand[1];
-    var fullHouseCards;
-    var canBeFullHouse = false;
-    var canBeTwoPair = false;
-    var sortedHand;
-    const isFullHouse = (finalScoredHand[longestHandIndex] && finalScoredHand[secondLongestHandIndex] &&
-        (longestHand[0] === 3 && secondLongestHand[0] === 2));
-    const isTwoPair = (finalScoredHand[longestHandIndex] && finalScoredHand[secondLongestHandIndex] &&
-        longestHand[0] === 2 && secondLongestHand[0] === 2);
-    if (isFullHouse)
-        canBeFullHouse = true;
-    if (isTwoPair)
-        canBeTwoPair = true;
-    const oneNumeralCards = finalScoredHand[longestHandIndex];
-    if (isFullHouse || isTwoPair) {
-        fullHouseCards = finalScoredHand[longestHandIndex].concat(finalScoredHand[secondLongestHandIndex]);
-        sortedHand = sortByOrder(fullHouseCards);
-    }
-    else {
-        sortedHand = sortByOrder(oneNumeralCards);
-    }
-    cardData.currentHand.allCards = sortedHand;
-    const evaluator = new HandEvaluator();
-    const flush = evaluator.isFlush();
-    const straight = evaluator.isStraight();
-    const handsInfo = [
-        { name: "Flush Five", condition: longestHand[0] === 5 && flush },
-        { name: "Flush House", condition: canBeFullHouse && flush },
-        { name: "Five Of A Kind", condition: longestHand[0] === 5 },
-        { name: "Straight Flush", condition: straight && flush },
-        { name: "Four Of A Kind", condition: longestHand[0] === 4 },
-        { name: "Flush", condition: flush },
-        { name: "Full House", condition: canBeFullHouse },
-        { name: "Straight", condition: straight },
-        { name: "Three Of A Kind", condition: longestHand[0] === 3 },
-        { name: "Two Pair", condition: canBeTwoPair },
-        { name: "Pair", condition: longestHand[0] === 2 },
-        { name: "High Card", condition: true }
-    ];
-    for (let i = 0; i < handsInfo.length; i++) {
-        if (handsInfo[i].condition) {
-            cardData.currentHand.handType = handsInfo[i].name;
-            break;
-        }
-    }
-    if (!flush && !straight) {
-        cardData.currentHand.allCards = sortedHand;
-    }
-    if (cardData.currentHand.allCards && stoneCards.length !== 0) {
-        cardData.currentHand.allCards = cardData.currentHand.allCards.concat(stoneCards);
-    }
-    else if (stoneCards.length !== 0) {
-        cardData.currentHand.allCards = stoneCards;
-    }
-    const handTypeText = document.getElementById("handType");
-    if (!handTypeText)
-        return finalScoredHand;
-    handTypeText.innerHTML = cardData.currentHand.handType;
-    scoreHand();
-    return finalScoredHand;
-}
 class HandEvaluator {
     constructor() {
         this.requiredCards = 5;
@@ -206,6 +77,135 @@ class HandEvaluator {
         }
         return false;
     }
+    isTwoPair(longestHand, secondLongestHand) {
+        return (longestHand === 2 && secondLongestHand === 2);
+    }
+    isFullHouse(longestHand, secondLongestHand) {
+        return (longestHand === 3 && secondLongestHand === 2);
+    }
+}
+function sortActiveCards() {
+    var activeCards = cards.hand.active;
+    var cardObjects = [];
+    activeCards.forEach(card => {
+        const currCard = cards.hand.all.find(cardObject => cardObject.DOMObject === card.DOMObject);
+        if (currCard) {
+            cardObjects.push(currCard);
+        }
+    });
+    if (!cardObjects)
+        return;
+    const sortedCards = [...cardObjects].sort((a, b) => {
+        const currentCard = cards.hand.all.find(card => card.DOMObject === a.DOMObject);
+        const nextCard = cards.hand.all.find(card => card.DOMObject === b.DOMObject);
+        if (!currentCard || !nextCard)
+            return 0;
+        const valA = cardData.sortNumber[currentCard.number];
+        const valB = cardData.sortNumber[nextCard.number];
+        if (valA !== valB)
+            return valB - valA;
+        const suitA = cardData.sortSuit[currentCard.suit];
+        const suitB = cardData.sortSuit[nextCard.suit];
+        return suitA - suitB;
+    });
+    return sortedCards;
+}
+export function updateCardType() {
+    restartValues();
+    const evaluator = new HandEvaluator();
+    const scoredHand = sortActiveCards();
+    if (!scoredHand)
+        return;
+    var finalScoredHand = [];
+    const longestHands = {
+        longestHand: { length: 0, hand: [] },
+        secondLongestHand: { length: 0, hand: [] }
+    };
+    const stoneModifierIndex = cardData.modifiers.all.enhancements.findIndex(modifier => modifier.name === "stone");
+    var stoneCards = [];
+    scoredHand.forEach(card => {
+        if (card.modifiers[0] === stoneModifierIndex) {
+            stoneCards.push(card);
+            return;
+        }
+        var isNew = true;
+        if (finalScoredHand.length != 0) {
+            for (let i = 0; i < finalScoredHand.length; i++) {
+                if (finalScoredHand[i][0].number == card.number) {
+                    finalScoredHand[i].push(card);
+                    isNew = false;
+                }
+            }
+        }
+        if (isNew) {
+            finalScoredHand.push([card]);
+        }
+    });
+    for (let i = 0; i < finalScoredHand.length; i++) {
+        const longestHand = longestHands.longestHand;
+        const secondLongestHand = longestHands.secondLongestHand;
+        if (finalScoredHand[i].length > secondLongestHand.length && finalScoredHand[i].length <= longestHand.length) {
+            secondLongestHand.length = finalScoredHand[i].length;
+            secondLongestHand.hand = finalScoredHand[i];
+        }
+        else if (finalScoredHand[i].length > longestHands.longestHand.length) {
+            if (longestHand.length > secondLongestHand.length) {
+                secondLongestHand.length = longestHand.length;
+            }
+            longestHand.length = finalScoredHand[i].length;
+            longestHand.hand = finalScoredHand[i];
+        }
+    }
+    const longestHand = longestHands.longestHand;
+    const secondLongestHand = longestHands.secondLongestHand;
+    var sortedHand;
+    const isFullHouse = evaluator.isFullHouse(longestHand.length, secondLongestHand.length);
+    const isTwoPair = evaluator.isTwoPair(longestHand.length, secondLongestHand.length);
+    if (isFullHouse || isTwoPair) {
+        const fullHouseCards = longestHand.hand.concat(secondLongestHand.hand);
+        sortedHand = sortByOrder(fullHouseCards);
+    }
+    else {
+        sortedHand = sortByOrder(longestHand.hand);
+    }
+    cardData.currentHand.allCards = sortedHand;
+    const isFlush = evaluator.isFlush();
+    const isStraight = evaluator.isStraight();
+    const handsInfo = [
+        { name: "Flush Five", condition: longestHand.length === 5 && isFlush },
+        { name: "Flush House", condition: isFullHouse && isFlush },
+        { name: "Five Of A Kind", condition: longestHand.length === 5 },
+        { name: "Straight Flush", condition: isStraight && isFlush },
+        { name: "Four Of A Kind", condition: longestHand.length === 4 },
+        { name: "Flush", condition: isFlush },
+        { name: "Full House", condition: isFullHouse },
+        { name: "Straight", condition: isStraight },
+        { name: "Three Of A Kind", condition: longestHand.length === 3 },
+        { name: "Two Pair", condition: isTwoPair },
+        { name: "Pair", condition: longestHand.length === 2 },
+        { name: "High Card", condition: true }
+    ];
+    for (let i = 0; i < handsInfo.length; i++) {
+        if (handsInfo[i].condition) {
+            cardData.currentHand.handType = handsInfo[i].name;
+            break;
+        }
+    }
+    if (!isFlush && !isStraight) {
+        cardData.currentHand.allCards = sortedHand;
+    }
+    if (cardData.currentHand.allCards && stoneCards.length !== 0) {
+        cardData.currentHand.allCards = cardData.currentHand.allCards.concat(stoneCards);
+    }
+    else if (stoneCards.length !== 0) {
+        cardData.currentHand.allCards = stoneCards;
+    }
+    const handTypeText = document.getElementById("handType");
+    if (!handTypeText)
+        return finalScoredHand;
+    handTypeText.innerHTML = cardData.currentHand.handType;
+    scoreHand();
+    return finalScoredHand;
 }
 function sortByOrder(cards) {
     if (!cards)
