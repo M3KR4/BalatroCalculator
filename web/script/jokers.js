@@ -1,17 +1,27 @@
 import { jokers, jokerDOMObjects } from "../data/jokerData.js";
 if (typeof document !== "undefined") {
+    const jokerSearchBar = document.getElementById("jokerSearch");
+    jokerSearchBar.addEventListener("input", setUpJokers);
     setUpJokers();
     setUpJokerPageBtns();
 }
 function setUpJokers() {
     var _a;
+    const jokerSearchBar = document.getElementById("jokerSearch");
     const jokerPages = jokerDOMObjects.pages;
-    if (!jokerPages) {
-        console.error("jokerSection not found");
+    if (!jokerSearchBar || !jokerPages) {
+        console.error("Joker elements not found");
         return;
     }
+    const jokerPageList = Array.from(jokerPages.children);
+    jokerPageList.forEach(element => {
+        element.remove();
+    });
+    const jokerSearchText = jokerSearchBar.value.toLowerCase();
     var allJokers = jokers.all;
     for (let i = 0; i < allJokers.length; i++) {
+        if (!allJokers[i].name.toLowerCase().includes(jokerSearchText))
+            continue;
         const jokerCard = document.createElement("div");
         jokerCard.style.backgroundImage = `url("../images/jokers/${jokers.all[i].filename}")`;
         jokerCard.classList.add("joker");

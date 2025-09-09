@@ -1,114 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Balatro Calculator</title>
+    <link rel="stylesheet" href="index.css" />
+    <link rel="icon" href="../images/other/icons/favicon.png" />
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Balatro Calculator</title>
-  <link rel="stylesheet" href="index.css">
-  <link rel="icon" href="../images/other/icons/favicon.png">
-</head>
-
-<body>
-
-  <side id="sideContent">
-    <section id="infoSection">
-      <div id="handType">None</div>
-      <section id="scoreSection">
-        <div id="chipsAmount" class="values"></div>
-        <div id="multAmount" class="values"></div>
-        <div id="finalScore" class="values"></div>
-        <div id="tarotAmount" class="smallAmountBox values"></div>
-        <div id="moneyAmount" class="smallAmountBox values"></div>
-        <div id="planetAmount" class="smallAmountBox values"></div>
-      </section>
-
-      <div id="addMultipleCardsSection">
-        <div id="cardCountText">Card Amount</div>
-        <input type="text" inputmode="numeric" id="cardCount" pattern="[0-9]*" value="1">
-      </div>
-    </section>
-
-
-
-  </side>
-
-  <section id="jokerContent">
-
-    <header id="activeJokersHeader">
-
-    </header>
-
-  </section>
-
-  <section id="mainContent">
-
-    <section id="mainUI">
-
-      <main id="cardsMain">
-
-        <section id="ButtonUI">
-          <button id="cardsButton" class="sectionListButtons borderedButton">Cards</button>
-          <button id="jokersButton" class="sectionListButtons">Jokers</button>
-          <button id="bossButton" class="sectionListButtons">Boss</button>
-          <button id="otherButton" class="sectionListButtons">Other</button>
-          <button id="settingsButton" class="sectionListButtons">Settings</button>
+  <body>
+    <side id="sideContent">
+      <section id="infoSection">
+        <div id="handType">None</div>
+        <section id="scoreSection">
+          <div id="chipsAmount" class="values"></div>
+          <div id="multAmount" class="values"></div>
+          <div id="finalScore" class="values"></div>
+          <div id="tarotAmount" class="smallAmountBox values"></div>
+          <div id="moneyAmount" class="smallAmountBox values"></div>
+          <div id="planetAmount" class="smallAmountBox values"></div>
         </section>
 
-        <section id="sectionListUI">
-          <section id="cardsSection" class="editGameSections selectedSection">
+        <div id="addMultipleCardsSection">
+          <div id="cardCountText">Card Amount</div>
+          <input
+            type="text"
+            inputmode="numeric"
+            id="cardCount"
+            pattern="[0-9]*"
+            value="1"
+          />
+        </div>
+      </section>
+    </side>
 
-            <section id="addCardsSection">
-              <section id="heartsL" class="addCardsSuitTypes"></section>
-              <section id="clubsL" class="addCardsSuitTypes"></section>
-              <section id="diamondsL" class="addCardsSuitTypes"></section>
-              <section id="spadesL" class="addCardsSuitTypes"></section>
-            </section>
+    <section id="jokerContent">
+      <header id="activeJokersHeader"></header>
+    </section>
 
-            <section id="cardModifiersSection">
-              <section id="enhancedCardsSection" class="cardModifiers">
-                <h2 id="enhancedText" class="modifierText">Enchanced Cards</h2>
-                <section id="enhancedSelect" class="modifierSelect"></section>
-              </section>
-
-              <section id="SealsSection" class="cardModifiers">
-                <h2 id="sealsText" class="modifierText">Seals</h2>
-                <section id="sealSelect" class="modifierSelect"></section>
-              </section>
-
-              <section id="EditionsSection" class="cardModifiers">
-                <h2 id="editionsText" class="modifierText">Editions</h2>
-                <section id="editionSelect" class="modifierSelect"></section>
-              </section>
-            </section>
+    <section id="mainContent">
+      <section id="mainUI">
+        <main id="cardsMain">
+          <section id="ButtonUI">
+            <button id="cardsButton" class="sectionListButtons borderedButton">
+              Cards
+            </button>
+            <button id="jokersButton" class="sectionListButtons">Jokers</button>
+            <button id="bossButton" class="sectionListButtons">Boss</button>
+            <button id="otherButton" class="sectionListButtons">Other</button>
+            <button id="settingsButton" class="sectionListButtons">
+              Settings
+            </button>
           </section>
 
+          <section id="sectionListUI">
+            <section id="cardsSection" class="editGameSections selectedSection">
+              <section id="addCardsSection">
+                <section id="heartsL" class="addCardsSuitTypes"></section>
+                <section id="clubsL" class="addCardsSuitTypes"></section>
+                <section id="diamondsL" class="addCardsSuitTypes"></section>
+                <section id="spadesL" class="addCardsSuitTypes"></section>
+              </section>
 
+              <section id="cardModifiersSection">
+                <section id="enhancedCardsSection" class="cardModifiers">
+                  <h2 id="enhancedText" class="modifierText">
+                    Enchanced Cards
+                  </h2>
+                  <section id="enhancedSelect" class="modifierSelect"></section>
+                </section>
 
-          <section id="addJokersSection" class="editGameSections">
-            <div id="changeJokerPage"></div>
+                <section id="SealsSection" class="cardModifiers">
+                  <h2 id="sealsText" class="modifierText">Seals</h2>
+                  <section id="sealSelect" class="modifierSelect"></section>
+                </section>
 
-            <div id="jokerPageWrapper">
-              <button id="jokerPageLeft" class="changeJokerPageButtons"> < </button>
-                  <div id="jokerPages"></div>
-                  <button id="jokerPageRight" class="changeJokerPageButtons"> > </button>
-            </div>
+                <section id="EditionsSection" class="cardModifiers">
+                  <h2 id="editionsText" class="modifierText">Editions</h2>
+                  <section id="editionSelect" class="modifierSelect"></section>
+                </section>
+              </section>
+            </section>
+
+            <section id="addJokersSection" class="editGameSections">
+              <div id="jokerSearchWrapper">
+                <input type="text" id="jokerSearch"/>
+              </div>
+
+              <div id="jokerPageWrapper">
+                <button id="jokerPageLeft" class="changeJokerPageButtons">
+                  <
+                </button>
+                <div id="jokerPages"></div>
+                <button id="jokerPageRight" class="changeJokerPageButtons">
+                  >
+                </button>
+              </div>
+            </section>
+            <section id="changeBossSection" class="editGameSections"></section>
+            <section id="otherSection" class="editGameSections"></section>
+            <section
+              id="changeSettingsSection"
+              class="editGameSections"
+            ></section>
           </section>
-          <section id="changeBossSection" class="editGameSections"></section>
-          <section id="otherSection" class="editGameSections"></section>
-          <section id="changeSettingsSection" class="editGameSections"></section>
+        </main>
+
+        <section id="activeCardsSection">
+          <section id="currentCardsSection"></section>
         </section>
-      </main>
-
-      <section id="activeCardsSection">
-        <section id="currentCardsSection"></section>
       </section>
     </section>
-  </section>
-</body>
+  </body>
 
-<script type="module" src="./script/cards.js"></script>
-<script type="module" src="./script/handScoring.js"></script>
-<script type="module" src="./script/jokers.js"></script>
-
+  <script type="module" src="./script/cards.js"></script>
+  <script type="module" src="./script/handScoring.js"></script>
+  <script type="module" src="./script/jokers.js"></script>
 </html>

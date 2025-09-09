@@ -390,6 +390,20 @@ body {
   position: absolute;
 }
 
+#jokerSearchWrapper{
+  display: flex;
+  height: 20%;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+#jokerSearch{
+  width: 80%;
+  height: 70%;
+  font-size: 10vh; 
+}
+
 .currentJokerPage {
   display: grid !important; 
 }
