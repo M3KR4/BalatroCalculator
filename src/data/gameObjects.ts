@@ -7,12 +7,7 @@ export type Card = {
   modifiers: number[] // Enhancement, Seal, Edition
 }
 
-export type Joker = {
-  DOMObject: HTMLElement,
-  name: string,
-  order: number,
-  edition: number
-}
+
 
 type CardHeldHandler = (e: MouseEvent) => void;
 
@@ -25,6 +20,13 @@ export function radnom(min: number, max: number) {
 }
 
 
+  export const buttonData = {
+    previousClickedButton: null as HTMLElement | null
+  }
+
+  export function initButtonData(){
+    buttonData.previousClickedButton = document.getElementById("cardsButton");
+  }
 
 export const cardData = {
   numerals: ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'] as string[],
@@ -34,6 +36,7 @@ export const cardData = {
   sortSuit: [1, 2, 3, 0] as number[],
   scientificNotationThreshold: Math.pow(10, 11) as number,
   cardWidthInVh: 9.49,
+  highContrast: true,
 
 
   modifiers: {
@@ -46,7 +49,7 @@ export const cardData = {
     all: {
       enhancements: [{ name: "bonus", amount: 30, type: "chips", condition: "inPlay" }, { name: "mult", amount: 4, type: "mult", condition: "inPlay" }, { name: "wild", condition: "inPlay" }, { name: "glass", amount: 2, type: "xMult", condition: "inPlay" }, { name: "steel", amount: 1.5, type: "xMult", condition: "inHand" }, { name: "stone", amount: 50, type: "chips", condition: "inPlay" }, { name: "gold", amount: 3, type: "money", condition: "inHand" }, { name: "lucky", amount: 20, type: "mult", chance: 1 / 5, amount2: 20, type2: "money", chance2: 1 / 20, condition: "inPlay" }],
       seals: [{ name: "gold", amount: 3, type: "money", condition: "inPlay" }, { name: "red", condition: "inPlay inHand" }, { name: "blue", amount: 1, type: "planet", condition: "inHand" }, { name: "purple", amount: 1, type: "tarot", condition: "inDiscard" }],
-      editions: [{ name: "foil", amount: 50, type: "chips", condition: "inPlay" }, { name: "holographic", amount: 10, type: "mult", condition: "inPlay" }, { name: "polychrome", amount: 1.5, type: "xMult", condition: "inPlay" }, { name: "debuffed", amount: 0, type: "", condition: "inPlay inHand"}]
+      editions: [{ name: "foil", amount: 50, type: "chips", condition: "inPlay" }, { name: "holographic", amount: 10, type: "mult", condition: "inPlay" }, { name: "polychrome", amount: 1.5, type: "xMult", condition: "inPlay" }, { name: "debuffed", amount: 0, type: "", condition: "inPlay inHand" }]
     }
   },
 
@@ -120,5 +123,5 @@ export const cardHeldEvent = {
 export const documentData = {
   mouseIsMoving: false,
   mouseStopTime: 100,
-  mousePosition: {x: 0, y: 0}
+  mousePosition: { x: 0, y: 0 }
 }
