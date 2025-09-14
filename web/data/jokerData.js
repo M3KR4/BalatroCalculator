@@ -1,8 +1,3 @@
-export const jokerDOMObjects = {
-    pageLeftBtn: document.getElementById("jokerPageLeft"),
-    pageRightBtn: document.getElementById("jokerPageRight"),
-    pages: document.getElementById("jokerPages"),
-};
 export const jokers = {
     displayCols: 10,
     displayRows: 3,

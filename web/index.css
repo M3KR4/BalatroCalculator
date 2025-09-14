@@ -399,9 +399,10 @@ body {
 }
 
 #jokerSearch{
-  width: 80%;
+  width: 95%;
   height: 70%;
-  font-size: 10vh; 
+  font-size: 8vh; 
+  text-align: center;
 }
 
 .currentJokerPage {

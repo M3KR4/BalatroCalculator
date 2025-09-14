@@ -1,6 +1,12 @@
 export function radnom(min, max) {
     return Number((Math.random() * (max + min)).toFixed());
 }
+export const buttonData = {
+    previousClickedButton: null
+};
+export function initButtonData() {
+    buttonData.previousClickedButton = document.getElementById("cardsButton");
+}
 export const cardData = {
     numerals: ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'],
     cardValues: [2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11],
@@ -9,6 +15,7 @@ export const cardData = {
     sortSuit: [1, 2, 3, 0],
     scientificNotationThreshold: Math.pow(10, 11),
     cardWidthInVh: 9.49,
+    highContrast: true,
     modifiers: {
         enhancements: ["bonus", "mult", "wild", "glass", "steel", "stone", "gold", "lucky"],
         seals: ["gold", "red", "blue", "purple"],

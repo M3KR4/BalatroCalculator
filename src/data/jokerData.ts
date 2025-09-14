@@ -1,7 +1,8 @@
-export const jokerDOMObjects = {
-    pageLeftBtn: document.getElementById("jokerPageLeft"),
-    pageRightBtn: document.getElementById("jokerPageRight"),
-    pages: document.getElementById("jokerPages"),
+export type Joker = {
+  DOMObject: HTMLElement,
+  name: string,
+  order: number,
+  edition: number
 }
 
 export const jokers = {
