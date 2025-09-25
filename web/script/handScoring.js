@@ -141,33 +141,20 @@ export function updateCardType() {
             finalScoredHand.push([card]);
         }
     });
-    for (let i = 0; i < finalScoredHand.length; i++) {
-        const longestHand = longestHands.longestHand;
-        const secondLongestHand = longestHands.secondLongestHand;
-        if (finalScoredHand[i].length > secondLongestHand.length && finalScoredHand[i].length <= longestHand.length) {
-            secondLongestHand.length = finalScoredHand[i].length;
-            secondLongestHand.hand = finalScoredHand[i];
-        }
-        else if (finalScoredHand[i].length > longestHands.longestHand.length) {
-            if (longestHand.length > secondLongestHand.length) {
-                secondLongestHand.length = longestHand.length;
-            }
-            longestHand.length = finalScoredHand[i].length;
-            longestHand.hand = finalScoredHand[i];
-        }
-    }
-    const longestHand = longestHands.longestHand;
-    const secondLongestHand = longestHands.secondLongestHand;
+    const findArraysOf = new ReturnArrayOf(finalScoredHand);
+    const longestHand = findArraysOf.theLongestArray();
+    const secondLongestHand = findArraysOf.theSecondLongestArray();
     var sortedHand;
     const isFullHouse = evaluator.isFullHouse(longestHand.length, secondLongestHand.length);
     const isTwoPair = evaluator.isTwoPair(longestHand.length, secondLongestHand.length);
     if (isFullHouse || isTwoPair) {
-        const fullHouseCards = longestHand.hand.concat(secondLongestHand.hand);
+        const fullHouseCards = longestHand.concat(secondLongestHand);
         sortedHand = sortByOrder(fullHouseCards);
     }
     else {
-        sortedHand = sortByOrder(longestHand.hand);
+        sortedHand = sortByOrder(longestHand);
     }
+    console.log(longestHand);
     cardData.currentHand.allCards = sortedHand;
     const isFlush = evaluator.isFlush();
     const isStraight = evaluator.isStraight();
@@ -381,4 +368,36 @@ function randomEvent(amount, chance, type) {
     const median = (chance >= 1 / 2) ? amount : 0;
     const object = { avg: avg, median: median, max: amount, type: type };
     return object;
+}
+class ReturnArrayOf {
+    constructor(arr) {
+        this.cardArray = arr;
+    }
+    theLongestArray() {
+        let longestIndex = -1;
+        for (let i = 0; i < this.cardArray.length; i++) {
+            const arr = this.cardArray[i];
+            if (longestIndex === -1 || arr.length > this.cardArray[longestIndex].length)
+                longestIndex = i;
+        }
+        return longestIndex === -1 ? [] : this.cardArray[longestIndex];
+    }
+    theSecondLongestArray() {
+        if (!this.cardArray || this.cardArray.length === 0)
+            return [];
+        let longestIndex = -1;
+        let secondIndex = -1;
+        for (let i = 0; i < this.cardArray.length; i++) {
+            const len = this.cardArray[i].length;
+            if (longestIndex === -1 || len > this.cardArray[longestIndex].length) {
+                secondIndex = longestIndex;
+                longestIndex = i;
+            }
+            else if (secondIndex === -1 || len > this.cardArray[secondIndex].length) {
+                if (i !== longestIndex)
+                    secondIndex = i;
+            }
+        }
+        return secondIndex === -1 ? [] : this.cardArray[secondIndex];
+    }
 }

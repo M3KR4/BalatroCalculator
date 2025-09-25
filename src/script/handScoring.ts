@@ -71,7 +71,7 @@ class HandEvaluator {
             if (finalHand.length >= 5 || this.scoredHand[i].modifiers[0] === this.getStoneIndex()) {
                 break;
             }
-            
+
             if ((this.scoredHand[i].number === 0 && this.scoredHand[0].number === 12) && this.scoredHand[0].modifiers[0] !== this.getStoneIndex()) {
 
                 finalHand.push(this.scoredHand[i], this.scoredHand[0]);
@@ -101,11 +101,11 @@ class HandEvaluator {
         return false;
     }
 
-    isTwoPair(longestHand : number, secondLongestHand : number){
+    isTwoPair(longestHand: number, secondLongestHand: number) {
         return (longestHand === 2 && secondLongestHand === 2);
     }
 
-    isFullHouse(longestHand : number, secondLongestHand : number){
+    isFullHouse(longestHand: number, secondLongestHand: number) {
         return (longestHand === 3 && secondLongestHand === 2);
     }
 }
@@ -156,8 +156,8 @@ export function updateCardType() {
     if (!scoredHand) return;
     var finalScoredHand: Card[][] = [];
     const longestHands = {
-        longestHand: {length: 0, hand: [] as Card[]},
-        secondLongestHand: {length: 0, hand: [] as Card[]}
+        longestHand: { length: 0, hand: [] as Card[] },
+        secondLongestHand: { length: 0, hand: [] as Card[] }
     }
     const stoneModifierIndex: number = cardData.modifiers.all.enhancements.findIndex(modifier => modifier.name === "stone");
     var stoneCards: Card[] = [];
@@ -179,32 +179,18 @@ export function updateCardType() {
         }
 
         if (isNew) {
-            finalScoredHand.push([card])
+            finalScoredHand.push([card]);
         }
+
+
     });
 
-    for (let i = 0; i < finalScoredHand.length; i++) {
-        const longestHand = longestHands.longestHand;
-        const secondLongestHand = longestHands.secondLongestHand;
-        if (finalScoredHand[i].length > secondLongestHand.length && finalScoredHand[i].length <= longestHand.length) {
 
-            secondLongestHand.length = finalScoredHand[i].length;
-            secondLongestHand.hand = finalScoredHand[i];
+    const findArraysOf = new ReturnArrayOf(finalScoredHand);
 
-        } else if (finalScoredHand[i].length > longestHands.longestHand.length) {
 
-            if (longestHand.length > secondLongestHand.length) {
-                secondLongestHand.length = longestHand.length;
-            }
-
-            longestHand.length = finalScoredHand[i].length;
-            longestHand.hand = finalScoredHand[i];
-
-        }
-    }
-
-    const longestHand = longestHands.longestHand;
-    const secondLongestHand = longestHands.secondLongestHand;
+    const longestHand = findArraysOf.theLongestArray();
+    const secondLongestHand = findArraysOf.theSecondLongestArray();
 
     var sortedHand: Card[] | null;
 
@@ -212,11 +198,12 @@ export function updateCardType() {
     const isTwoPair = evaluator.isTwoPair(longestHand.length, secondLongestHand.length);
 
     if (isFullHouse || isTwoPair) {
-        const fullHouseCards : Card[] = longestHand.hand.concat(secondLongestHand.hand);
+        const fullHouseCards: Card[] = longestHand.concat(secondLongestHand);
         sortedHand = sortByOrder(fullHouseCards);
     } else {
-        sortedHand = sortByOrder(longestHand.hand);
+        sortedHand = sortByOrder(longestHand);
     }
+    console.log(longestHand);
 
     cardData.currentHand.allCards = sortedHand;
 
@@ -240,13 +227,12 @@ export function updateCardType() {
 
 
     for (let i = 0; i < handsInfo.length; i++) {
-
         if (handsInfo[i].condition) {
             cardData.currentHand.handType = handsInfo[i].name;
             break;
         }
     }
-    
+
     if (!isFlush && !isStraight) {
         cardData.currentHand.allCards = sortedHand;
     }
@@ -257,14 +243,11 @@ export function updateCardType() {
         cardData.currentHand.allCards = stoneCards;
     }
 
-
-
     const handTypeText: HTMLElement | null = document.getElementById("handType");
 
     if (!handTypeText) return finalScoredHand;
 
     handTypeText.innerHTML = cardData.currentHand.handType;
-
     scoreHand();
 
     return finalScoredHand;
@@ -506,4 +489,43 @@ function randomEvent(amount: number, chance: number, type: string) {
     const object = { avg: avg, median: median, max: amount, type: type };
 
     return object;
+}
+
+class ReturnArrayOf {
+
+    private cardArray: any[][];
+
+    constructor(arr: any[][]) {
+        this.cardArray = arr;
+    }
+
+    theLongestArray() {
+        let longestIndex = -1;
+        for (let i = 0; i < this.cardArray.length; i++) {
+            const arr = this.cardArray[i];
+            if (longestIndex === -1 || arr.length > this.cardArray[longestIndex].length) longestIndex = i;
+        }
+        return longestIndex === -1 ? [] : this.cardArray[longestIndex];
+    }
+
+theSecondLongestArray(): any[] {
+  if (!this.cardArray || this.cardArray.length === 0) return [];
+
+  let longestIndex = -1;
+  let secondIndex = -1;
+
+  for (let i = 0; i < this.cardArray.length; i++) {
+    const len = this.cardArray[i].length;
+
+    if (longestIndex === -1 || len > this.cardArray[longestIndex].length) {
+      secondIndex = longestIndex;
+      longestIndex = i;
+    } else if (secondIndex === -1 || len > this.cardArray[secondIndex].length) {
+
+      if (i !== longestIndex) secondIndex = i;
+    }
+  }
+
+  return secondIndex === -1 ? [] : this.cardArray[secondIndex];
+}
 }
