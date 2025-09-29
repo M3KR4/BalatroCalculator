@@ -22,6 +22,11 @@ function setUpJokerUI() {
         const jokerImage = `url("../images/jokers/${jokers.all[i].filename}")`;
         jokerCard.style.backgroundImage = jokerImage;
         jokerCard.classList.add("joker");
+        const addJokerListener = () => {
+            addJoker(jokerCard, addJokerListener);
+            setJokerMargins();
+        };
+        jokerCard.addEventListener("click", addJokerListener);
         if (jokerPages.children.length === 0 || jokers.displayCols * jokers.displayRows === ((_a = jokerPages.lastChild) === null || _a === void 0 ? void 0 : _a.childNodes.length)) {
             const page = document.createElement("div");
             page.classList.add("singularJokerPage");
@@ -41,6 +46,34 @@ function setUpJokerUI() {
     if (firstJokerPage) {
         firstJokerPage.classList.add("currentJokerPage");
     }
+}
+function addJoker(joker, listener) {
+    const newJoker = joker.cloneNode(true);
+    newJoker.removeEventListener("click", listener);
+    const activeJokerArea = document.getElementById("activeJokersHeader");
+    activeJokerArea === null || activeJokerArea === void 0 ? void 0 : activeJokerArea.appendChild(newJoker);
+}
+function setJokerMargins() {
+    const activeJokerArea = document.getElementById("activeJokersHeader");
+    const firstChild = activeJokerArea === null || activeJokerArea === void 0 ? void 0 : activeJokerArea.firstChild;
+    if (!activeJokerArea) {
+        console.error("Cannot find activeJokersHeader");
+        return;
+    }
+    if (!firstChild) {
+        console.error("Cannot find first child of activeJokerHeader");
+        return;
+    }
+    const jokerAmount = activeJokerArea.childElementCount;
+    const jokerAreaWidth = activeJokerArea.clientWidth;
+    const jokerWidth = 100;
+    const marginRight = (activeJokerArea.clientWidth - ((activeJokerArea.childNodes.length + 1) * jokerWidth)) / jokerAmount;
+    const finalMargin = marginRight <= -0.1 ? marginRight : -0.1;
+    Array.from(activeJokerArea === null || activeJokerArea === void 0 ? void 0 : activeJokerArea.children).forEach(joker => {
+        const realJoker = joker;
+        realJoker.style.width = `100px`;
+        realJoker.style.marginRight = `${finalMargin}px`;
+    });
 }
 function setUpJokerPageBtns() {
     const pageLeft = jokerUI.pageLeftBtn;
