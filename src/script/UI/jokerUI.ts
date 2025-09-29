@@ -27,6 +27,13 @@ function setUpJokerUI() {
         jokerCard.style.backgroundImage = jokerImage;
         jokerCard.classList.add("joker");
 
+        const addJokerListener = () => {
+            addJoker(jokerCard, addJokerListener);
+            setJokerMargins();
+        }
+
+        jokerCard.addEventListener("click", addJokerListener);
+
         if (jokerPages.children.length === 0 || jokers.displayCols * jokers.displayRows === jokerPages.lastChild?.childNodes.length) {
             const page = document.createElement("div");
             page.classList.add("singularJokerPage");
@@ -46,6 +53,44 @@ function setUpJokerUI() {
     if (firstJokerPage) {
         firstJokerPage.classList.add("currentJokerPage");
     }
+}
+
+function addJoker(joker : HTMLElement, listener : EventListener){
+    const newJoker = joker.cloneNode(true);
+    newJoker.removeEventListener("click", listener);
+    const activeJokerArea = document.getElementById("activeJokersHeader");
+
+    activeJokerArea?.appendChild(newJoker);
+}
+
+function setJokerMargins(){
+    const activeJokerArea : HTMLElement | null = document.getElementById("activeJokersHeader");
+    const firstChild : HTMLElement = activeJokerArea?.firstChild as HTMLElement;
+
+    if(!activeJokerArea){
+        console.error("Cannot find activeJokersHeader");
+        return;
+    }
+
+    if(!firstChild){
+        console.error("Cannot find first child of activeJokerHeader");
+        return;
+    }
+    const jokerAmount = activeJokerArea.childElementCount;
+    const jokerAreaWidth = activeJokerArea.clientWidth;
+    const jokerWidth = 100;
+
+    const marginRight = (activeJokerArea.clientWidth - ((activeJokerArea.childNodes.length +1) * jokerWidth)) / jokerAmount;
+    const finalMargin = marginRight <= -0.1 ? marginRight : -0.1;
+
+
+    Array.from(activeJokerArea?.children).forEach(joker => {
+        const realJoker = joker as HTMLElement;
+        realJoker.style.width = `100px`;
+        realJoker.style.marginRight = `${finalMargin}px`;
+    });
+
+    
 }
 
 function setUpJokerPageBtns() {
@@ -105,3 +150,4 @@ function setUpJokerPageBtns() {
         }
      });
 }
+
